@@ -1,0 +1,16 @@
+{
+  "environment": "pro",
+  "baseUrls": {
+    "dev": "https://rrtxro6601.execute-api.eu-west-1.amazonaws.com/develop",
+    "pre": "https://kor86emf10.execute-api.eu-west-1.amazonaws.com/staging",
+    "pro": "https://omcoxj4o5i.execute-api.eu-west-1.amazonaws.com/pro"
+  },
+  "endpoints": {
+    "models": "/models",
+    "modelStatus": "/l4v/model",
+    "result": "/l4v/result",
+    "imageUrl": "/image/url",
+    "startService": "/l4v/start",
+    "stopService": "/l4v/stop"
+  }
+}
