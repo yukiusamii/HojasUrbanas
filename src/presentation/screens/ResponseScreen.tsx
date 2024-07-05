@@ -20,90 +20,97 @@ export const ResponseScreen = () => {
   const [confidence, setConfidence] = useState(0);
 
   const waitResponse = async () => {
-    const response = await getResponse(
-      params.id,
-      params.proyectName,
-      params.modelId,
-    );
-    switch (response.status) {
-      case 'completed':
-        console.log(
-          '***************** Se ha completado y el resultado es: ',
-          response.isAnomalous,
-        );
-        setLoading(false);
-        setEstadoRespuesta('completed');
-        setConfidence(Math.round(response.confidence * 100));
-        setRespuesta(response.isAnomalous);
-        break;
+    // const response = await getResponse(
+    //   params.id,
+    //   params.proyectName,
+    //   params.modelId,
+    // );
+    // switch (response.status) {
+    //   case 'completed':
+    //     console.log(
+    //       '***************** Se ha completado y el resultado es: ',
+    //       response.isAnomalous,
+    //     );
+    //     setLoading(false);
+    //     setEstadoRespuesta('completed');
+    //     setConfidence(Math.round(response.confidence * 100));
+    //     setRespuesta(response.isAnomalous);
+    //     break;
 
-      default:
-        console.log('******* FALLO EN LA RESPUESTA *********');
+    //   default:
+    //     console.log('******* FALLO EN LA RESPUESTA *********');
 
-        setLoading(false);
-        setEstadoRespuesta('failed');
-        break;
-    }
+    //     setLoading(false);
+    //     setEstadoRespuesta('failed');
+    //     break;
+    // }
+
+    setTimeout(() => {
+      setLoading(false);
+      setEstadoRespuesta('completed');
+      setConfidence(Math.round(0.94 * 100));
+      setRespuesta(false);
+    }, 4500);
   };
   useEffect(() => {
     setLoading(true);
     waitResponse();
   }, []);
-  const getResponse = async (
-    id: string,
-    proyectName: string,
-    modelId: number,
-    attempt = 1,
-  ): Promise<any> => {
-    try {
-      // Esperar 3 segundos antes de hacer la llamada
-      await new Promise(resolve => setTimeout(resolve, 3000));
+  // const getResponse = async (
+  //   id: string,
+  //   proyectName: string,
+  //   modelId: number,
+  //   attempt = 1,
+  // ): Promise<any> => {
+  //   try {
+  //     // Esperar 3 segundos antes de hacer la llamada
+  //     await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Hacer la solicitud HTTP
-      const response = await fetch(
-        apiUrls.result +
-          `?project=${encodeURIComponent(
-            proyectName,
-          )}&model=${encodeURIComponent(modelId)}&imageId=${encodeURIComponent(
-            id,
-          )}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+  //     // Hacer la solicitud HTTP
+  //     const response = await fetch(
+  //       apiUrls.result +
+  //         `?project=${encodeURIComponent(
+  //           proyectName,
+  //         )}&model=${encodeURIComponent(modelId)}&imageId=${encodeURIComponent(
+  //           id,
+  //         )}`,
+  //       {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     );
 
-      if (!response.ok) {
-        // throw new Error('La solicitud para obtener la respuesta falló');
-        setLoading(false);
-        setEstadoRespuesta('failed');
-      }
+  //     if (!response.ok) {
+  //       // throw new Error('La solicitud para obtener la respuesta falló');
+  //       setLoading(false);
+  //       setEstadoRespuesta('failed');
+  //     }
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      console.log('************ INTENTO ', attempt);
-      console.log('*************** STATUS', data.status);
+  //     console.log('************ INTENTO ', attempt);
+  //     console.log('*************** STATUS', data.status);
 
-      // Verificar los estados 'completed' o 'failed'
-      if (data.status === 'completed' || data.status === 'failed') {
-        console.log('Proceso completado:', data);
-        return data; // Detener si el proceso está completado o ha fallado
-      } else if (attempt < 10) {
-        // Llamar de nuevo a la función si no se han alcanzado 10 intentos
-        console.log('Reintentando, intento número:', attempt);
-        return getResponse(id, proyectName, modelId, attempt + 1);
-      } else {
-        // Máximo de intentos alcanzado sin completar o fallar
-        console.log('Máximo de intentos alcanzado');
-        return data;
-      }
-    } catch (error) {
-      console.error('Error en la solicitud para obtener la respuesta:', error);
-      throw error; // Propagar el error para manejarlo más arriba si es necesario
-    }
-  };
+  //     // Verificar los estados 'completed' o 'failed'
+  //     if (data.status === 'completed' || data.status === 'failed') {
+  //       console.log('Proceso completado:', data);
+  //       return data; // Detener si el proceso está completado o ha fallado
+  //     } else if (attempt < 10) {
+  //       // Llamar de nuevo a la función si no se han alcanzado 10 intentos
+  //       console.log('Reintentando, intento número:', attempt);
+  //       return getResponse(id, proyectName, modelId, attempt + 1);
+  //     } else {
+  //       // Máximo de intentos alcanzado sin completar o fallar
+  //       console.log('Máximo de intentos alcanzado');
+  //       return data;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error en la solicitud para obtener la respuesta:', error);
+  //     throw error; // Propagar el error para manejarlo más arriba si es necesario
+  //   }
+  // };
 
   return (
     <View style={{...globalStyles.centerContainer, margin: 0, padding: 0}}>
@@ -123,14 +130,14 @@ export const ResponseScreen = () => {
           {
             <View style={styles.container}>
               <Image source={{uri: params.uri}} style={styles.image} />
-              <View
+              {/* <View
                 style={{
                   ...styles.mascara,
                 }}>
                 <View
                   style={{
                     ...styles.confidence,
-                    backgroundColor: respuesta ? '#DF1642' : '#18A957',
+                    backgroundColor: '#18A957',
                   }}>
                   <Text style={styles.confidenceText}>
                     {respuesta ? 'ANOMALY' : 'NORMAL'}
@@ -139,17 +146,30 @@ export const ResponseScreen = () => {
                     Confidence level {confidence}%{' '}
                   </Text>
                 </View>
-              </View>
+              </View> */}
             </View>
           }
 
           <View style={styles.cardWrap}>
-            <Text style={styles.subtitle2}>Do you agree with the result?</Text>
-            <Text style={styles.subtitle1}>
-              Your feedback will help us improve the AI model
+            <Text
+              style={{
+                ...globalStyles.headlineSmall,
+                color: MyTheme.colors.black,
+              }}>
+              Es una{' '}
+              <Text
+                style={{
+                  ...globalStyles.headlineSmall,
+                  color: MyTheme.colors.primary,
+                }}>
+                Aeonium
+              </Text>{' '}
+            </Text>
+            <Text style={globalStyles.bodyLarge}>
+              con una confianza del 94.49%
             </Text>
             <View style={styles.cardWrapRow}>
-              <Button
+              {/* <Button
                 mode="contained"
                 style={{marginBottom: 16, marginTop: 24, width: 80}}
                 onPress={async () => {
@@ -159,18 +179,13 @@ export const ResponseScreen = () => {
                   });
                 }}>
                 Yes
-              </Button>
+              </Button> */}
 
               <Button
                 mode="contained"
-                style={{marginBottom: 16, marginTop: 24, width: 80}}
-                onPress={async () => {
-                  navigation.reset({
-                    index: 0,
-                    routes: [{name: 'Inicio'}],
-                  });
-                }}>
-                No
+                style={{marginBottom: 16, marginTop: 24}}
+                onPress={async () => {}}>
+                Ver más información
               </Button>
             </View>
           </View>
@@ -185,7 +200,7 @@ export const ResponseScreen = () => {
             size="large"
           />
 
-          <Text>Your product is being analyzed by AI...</Text>
+          <Text>La planta está siendo analizada...</Text>
         </View>
       )}
 
@@ -210,7 +225,6 @@ const styles = StyleSheet.create({
     height: '100%',
     minHeight: 500,
     objectFit: 'cover',
-    backgroundColor: 'red',
     position: 'absolute',
   },
   mascara: {
@@ -229,8 +243,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    paddingTop: 24,
+    padding: 40,
+    paddingTop: 40,
     backgroundColor: 'white',
     width: '100%',
   },

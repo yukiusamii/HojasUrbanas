@@ -11,6 +11,8 @@ export type RootStackParamList = {
   Response: {id: string; uri: string; modelId: number; proyectName: string}; // Espera un parámetro 'myData' de tipo string
   List: undefined;
   Inicio: undefined;
+  Reconocimiento: undefined;
+  Respuesta: {uri: string};
 };
 
 // Crear el stack navigator usando los tipos definidos
@@ -39,6 +41,12 @@ export const StackNavigator = () => {
       <Stack.Screen name="List" component={ModelListScreen} />
       <Stack.Screen name="Model" component={UploadPhotoScreen} />
       <Stack.Screen name="Response" component={ResponseScreen} />
+      <Stack.Screen name="Respuesta" component={ResponseScreen} />
+      <Stack.Screen
+        name="Reconocimiento"
+        component={UploadPhotoScreen}
+        options={{headerTitle: 'Subida imagen'}}
+      />
     </Stack.Navigator>
   );
 };

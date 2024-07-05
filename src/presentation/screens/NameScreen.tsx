@@ -1,11 +1,11 @@
 import {View, Text, Animated, StyleSheet} from 'react-native';
 import {CameraAdapter} from '../adapters/camera-adapter';
-import {globalStyles} from '../theme/global.styles';
 import {Button} from 'react-native-paper';
 import {useEffect, useRef} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../routes/StackNavigator';
 import {white} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import {MyTheme, globalStyles} from '../theme/global.styles';
 
 export const NameScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -23,7 +23,7 @@ export const NameScreen = () => {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{name: 'List'}],
+          routes: [{name: 'Reconocimiento'}],
         }); // Reemplaza con el nombre de la pantalla a la que deseas navegar
       }, 1500); // Reemplaza con el nombre de la pantalla a la que deseas navegar
     });
@@ -32,37 +32,37 @@ export const NameScreen = () => {
     <View
       style={{
         ...globalStyles.centerContainer,
-        backgroundColor: '#E20074',
+        backgroundColor: MyTheme.colors.tertiary100,
       }}>
       {/* <Text style={globalStyles.title}>PQI</Text> */}
       <Animated.Image
-        source={require('../../assets/img/iconPQI.png')}
+        source={require('../../assets/img/logo_hojas_urbanas_sin_fondo.png')}
         style={{...styles.image, opacity: fadeAnim}}></Animated.Image>
       <Animated.Text
         style={{
-          ...styles.subtitle1,
+          ...globalStyles.headlineLarge,
           opacity: fadeAnim,
         }}>
-        Welcome to the
+        Hojas Urbanas
       </Animated.Text>
 
-      <Animated.Text
+      {/* <Animated.Text
         style={{
           ...styles.subtitle2,
           opacity: fadeAnim,
         }}>
         Portable Quality Inspection Showcase
-      </Animated.Text>
+      </Animated.Text> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
-    width: 130, // ajusta el tamaño de la imagen según tus necesidades
-    height: 130,
+    width: 200, // ajusta el tamaño de la imagen según tus necesidades
+    height: 200,
     resizeMode: 'contain', // puedes usar 'cover', 'stretch', etc. según tus necesidades
-    marginBottom: 16,
+    marginBottom: 8,
   },
 
   subtitle1: {
