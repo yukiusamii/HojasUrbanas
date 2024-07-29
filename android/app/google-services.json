@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "572226988876",
+    "project_id": "hojasurbanas",
+    "storage_bucket": "hojasurbanas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572226988876:android:140cc0e599e67192e0bde9",
+        "android_client_info": {
+          "package_name": "com.PQI"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA8OOfbAv7e9VoHYg_ctetmgfl2RAiI9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
