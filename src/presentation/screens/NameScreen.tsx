@@ -23,7 +23,7 @@ export const NameScreen = () => {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{name: 'Reconocimiento'}],
+          routes: [{name: 'PruebasScreen'}],
         }); // Reemplaza con el nombre de la pantalla a la que deseas navegar
       }, 1500); // Reemplaza con el nombre de la pantalla a la que deseas navegar
     });

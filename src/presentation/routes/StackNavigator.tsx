@@ -3,6 +3,7 @@ import {ResponseScreen} from '../screens/ResponseScreen';
 import {UploadPhotoScreen} from '../screens/UploadPhotoScreen';
 import {ModelListScreen} from '../screens/ModelListScreen';
 import {NameScreen} from '../screens/NameScreen';
+import {PruebasScreen} from '../screens/PruebasScreen';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 
 // Definir los tipos para los parámetros de cada pantalla
@@ -12,6 +13,7 @@ export type RootStackParamList = {
   List: undefined;
   Inicio: undefined;
   Reconocimiento: undefined;
+  PruebasScreen: undefined;
   Respuesta: {uri: string};
 };
 
@@ -42,6 +44,7 @@ export const StackNavigator = () => {
       <Stack.Screen name="Model" component={UploadPhotoScreen} />
       <Stack.Screen name="Response" component={ResponseScreen} />
       <Stack.Screen name="Respuesta" component={ResponseScreen} />
+      <Stack.Screen name="PruebasScreen" component={PruebasScreen} />
       <Stack.Screen
         name="Reconocimiento"
         component={UploadPhotoScreen}
