@@ -5,7 +5,7 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
 interface Planta {
-  nom_comun: string;
+  nombre_comun: string;
   descripcion: string;
   img_url: string;
   // Agrega otros campos que tengas en tu documento de planta
@@ -46,7 +46,7 @@ export const PruebasScreen = () => {
         const plantasData: Planta[] = plantasCollection.docs.map(doc => {
           const docData = doc.data();
           return {
-            nom_comun: docData.nom_comun,
+            nombre_comun: docData.nombre_comun,
             descripcion: docData.descripcion,
             img_url: docData.img_url,
             // Agrega otros campos que tengas en tu documento de planta
@@ -84,7 +84,7 @@ export const PruebasScreen = () => {
     <View style={{display: 'flex', flexDirection: 'column', gap: 30}}>
       {data.map((planta, index) => (
         <View key={index}>
-          <Text>{planta.nom_comun}</Text>
+          <Text>{planta.nombre_comun}</Text>
           <Text>{planta.descripcion}</Text>
           {imageUrls[planta.img_url] ? (
             <FastImage

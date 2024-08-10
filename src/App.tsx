@@ -6,6 +6,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import {MyTheme} from './presentation/theme/global.styles';
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './presentation/routes/StackNavigator';
+import {MainStackNavigator} from './presentation/routes/BottomTabsNavegator';
 export const App = () => {
   return (
     <PaperProvider
@@ -15,7 +16,8 @@ export const App = () => {
       }}>
       <NavigationContainer>
         <SafeAreaView style={{flex: 1}}>
-          <StackNavigator />
+          {/* <StackNavigator /> */}
+          <MainStackNavigator />
 
           {/* <CamaraAreaScreen /> */}
         </SafeAreaView>
