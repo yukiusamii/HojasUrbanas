@@ -7,11 +7,12 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import {type RootStackParamList} from '../routes/BottomTabsNavegator';
+import {MyTheme, globalStyles} from '../theme/global.styles';
 
 export const PlantsScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
-    <View>
+    <View style={globalStyles.topLeftContainer}>
       <Text>PlantsScreen</Text>
       <Button
         mode="contained"

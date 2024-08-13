@@ -5,6 +5,7 @@ import {HomeScreen} from '../screens/HomeScreen';
 import {PlantsScreen} from '../screens/PlantsScreen';
 import {CartScreen} from '../screens/CartScreen';
 import {ProfileScreen} from '../screens/ProfileScreen';
+import {AuthScreen} from '../screens/AuthScreen';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 
 export type RootStackParamList = {
@@ -14,6 +15,7 @@ export type RootStackParamList = {
   Profile: undefined;
   MainTabs: undefined;
   Prueba: undefined;
+  Auth: undefined;
 };
 
 // Crear el Stack Navigator global
@@ -141,8 +143,7 @@ export const MainStackNavigator = () => (
     <MainStack.Screen name="Prueba" component={PruebasScreen} />
 
     {/* Aquí puedes agregar más pantallas globales que estén fuera del TabNavigator */}
-    {/* Ejemplo:
-    <MainStack.Screen name="SomeOtherScreen" component={SomeOtherScreen} />
-    */}
+
+    <MainStack.Screen name="Auth" component={AuthScreen} />
   </MainStack.Navigator>
 );

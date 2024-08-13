@@ -12,7 +12,20 @@
           "package_name": "com.PQI"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "572226988876-dsrcgnavjicet9irtbsgm5h9272vhm97.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.PQI",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "572226988876-ahrucc2v0qd3gfh5quki8anigc7nlug8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBA8OOfbAv7e9VoHYg_ctetmgfl2RAiI9c"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572226988876-ahrucc2v0qd3gfh5quki8anigc7nlug8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
