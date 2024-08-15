@@ -54,6 +54,7 @@ export const HomeScreen = () => {
             descripcion: docData.descripcion,
             img_url: docData.img_url,
             precio: docData.precio,
+            id: docData.id,
             // Agrega otros campos que tengas en tu documento de planta
           } as Planta;
         });
@@ -133,6 +134,7 @@ export const HomeScreen = () => {
             onPress={() => {
               console.log('Has pulsado: ', item.nombre_comun);
             }}
+            id={item.id}
             nombre_comun={item.nombre_comun}
             img_url={imageUrls[item.img_url]}
             precio={item.precio}

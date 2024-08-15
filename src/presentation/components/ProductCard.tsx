@@ -3,6 +3,7 @@ import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
 import {Button} from 'react-native-paper';
 import StarRating from 'react-native-star-rating-widget';
+import {useCartStore} from '../store/cart-store';
 interface Props {
   onPress: () => void;
   nombre_comun: string;
@@ -12,6 +13,7 @@ interface Props {
     total: number;
   };
   img_url: string;
+  id: string;
 }
 
 export const ProductCard = ({
@@ -20,7 +22,9 @@ export const ProductCard = ({
   img_url,
   precio,
   rating,
+  id,
 }: Props) => {
+  const addProduct = useCartStore(state => state.addProduct);
   return (
     <Pressable
       onPress={() => onPress()}
@@ -67,6 +71,7 @@ export const ProductCard = ({
             icon="cart-outline"
             onPress={() => {
               console.log('Has Añadido al carrito: ', nombre_comun);
+              addProduct(id, 1, nombre_comun, img_url, precio);
             }}>
             Añadir al carrito
           </Button>
@@ -114,13 +119,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  loadingAlign: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-
   cardWrap: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -136,12 +134,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     width: '100%',
-  },
-
-  greenText: {
-    color: '#18A957',
-  },
-  redText: {
-    color: '#DF1642',
   },
 });

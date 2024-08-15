@@ -41,6 +41,7 @@ const HomeStackScreen = () => (
       name="Home"
       component={HomeScreen}
       options={{
+        headerShown: false,
         title: 'Inicio',
       }}
     />
