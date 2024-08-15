@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-
-interface Planta {
-  nombre_comun: string;
-  descripcion: string;
-  img_url: string;
-  // Agrega otros campos que tengas en tu documento de planta
-}
+import {ProductCard} from '../components/ProductCard';
+import {globalStyles, MyTheme} from '../theme/global.styles';
+import {Planta} from '../models/models';
 
 export const PruebasScreen = () => {
   const [data, setData] = useState<Planta[]>([]);
@@ -17,12 +19,10 @@ export const PruebasScreen = () => {
   const [imageUrls, setImageUrls] = useState<{[key: string]: string}>({});
 
   const getImageUrl = async (imgUrl: string) => {
-    console.log('************URL getImageUrl: ', imgUrl);
     if (
       !imgUrl ||
       (!imgUrl.startsWith('gs://') && !imgUrl.startsWith('https://'))
     ) {
-      console.error('URL de la imagen no válida:', imgUrl);
       return null;
     }
     try {
@@ -49,6 +49,7 @@ export const PruebasScreen = () => {
             nombre_comun: docData.nombre_comun,
             descripcion: docData.descripcion,
             img_url: docData.img_url,
+            precio: docData.precio,
             // Agrega otros campos que tengas en tu documento de planta
           } as Planta;
         });
@@ -57,7 +58,11 @@ export const PruebasScreen = () => {
 
         const urls: {[key: string]: string} = {};
         for (const planta of plantasData) {
-          console.log('-----------------*URL FOR: ', planta.img_url);
+          console.log(
+            '-----------------*Precio Planta: ',
+            planta.nombre_comun,
+            planta.precio,
+          );
 
           const url = await getImageUrl(planta.img_url);
           if (url) {
@@ -77,30 +82,34 @@ export const PruebasScreen = () => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <View style={globalStyles.centerContainer}>
+        <ActivityIndicator
+          animating={true}
+          color={MyTheme.colors.primary}
+          size="large"
+        />
+
+        <Text>Cargando los productos...</Text>
+      </View>
+    );
   }
 
   return (
-    <View style={{display: 'flex', flexDirection: 'column', gap: 30}}>
-      {data.map((planta, index) => (
-        <View key={index}>
-          <Text>{planta.nombre_comun}</Text>
-          <Text>{planta.descripcion}</Text>
-          {imageUrls[planta.img_url] ? (
-            <FastImage
-              style={{width: 200, height: 200}}
-              source={{
-                uri: imageUrls[planta.img_url],
-                priority: FastImage.priority.normal,
-              }}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-          ) : (
-            <ActivityIndicator size="small" color="#0000ff" />
-          )}
-          {/* Renderiza otros campos según sea necesario */}
-        </View>
-      ))}
+    <View style={{backgroundColor: MyTheme.colors.background}}>
+      <FlatList
+        style={styles.flatList}
+        data={data}
+        renderItem={({item}) => (
+          <ProductCard
+            onPress={() => {}}
+            nombre_comun={item.nombre_comun}
+            img_url={imageUrls[item.img_url]}
+            precio={item.precio}
+            rating={{nota: 4.2, total: 3}}
+          />
+        )}
+      />
     </View>
   );
 };
@@ -112,16 +121,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain', // puedes usar 'cover', 'stretch', etc. según tus necesidades
     marginBottom: 8,
   },
-  subtitle1: {
-    fontSize: 30,
-    fontWeight: '200',
-    color: 'white',
-    textAlign: 'center',
-  },
-  subtitle2: {
-    fontSize: 30,
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center',
+  flatList: {
+    backgroundColor: MyTheme.colors.background,
+    paddingTop: 10,
   },
 });

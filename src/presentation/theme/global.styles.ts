@@ -14,6 +14,7 @@ export const MyTheme = {
     primary5: '#fce1ef',
     lightGrey: '#b7b7b7',
     black: '#1A1A1A',
+    navBar: '#D4F5D4',
     // Puedes personalizar otros colores según necesites
   },
 };
@@ -147,5 +148,23 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 16,
     letterSpacing: 0.4,
+  },
+  rowCenterCenter: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowCenterSpaceBetween: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowCenterEnd: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });

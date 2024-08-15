@@ -7,7 +7,7 @@ import {CartScreen} from '../screens/CartScreen';
 import {ProfileScreen} from '../screens/ProfileScreen';
 import {AuthScreen} from '../screens/AuthScreen';
 import {MyTheme, globalStyles} from '../theme/global.styles';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 export type RootStackParamList = {
   Home: {id: string};
   Plants: undefined;
@@ -28,15 +28,22 @@ const HomeStackScreen = () => (
   <MainStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: MyTheme.colors.primary, // Cambia el color de fondo del header
+        backgroundColor: MyTheme.colors.background,
       },
-      headerTintColor: '#fff', // Cambia el color del texto del header
+      headerShadowVisible: false,
+      headerTintColor: MyTheme.colors.black, // Cambia el color del texto del header
       headerTitleStyle: {
-        fontWeight: 'bold', // Cambia el estilo del título del header
+        ...globalStyles.headlineMedium,
       },
       animation: 'slide_from_right',
     }}>
-    <MainStack.Screen name="Home" component={HomeScreen} />
+    <MainStack.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        title: 'Inicio',
+      }}
+    />
     {/* <MainStack.Screen
       name="Prueba"
       component={PruebasScreen}></MainStack.Screen> */}
@@ -48,15 +55,22 @@ const PlantsStackScreen = () => (
   <MainStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: MyTheme.colors.primary, // Cambia el color de fondo del header
+        backgroundColor: MyTheme.colors.background,
       },
-      headerTintColor: '#fff', // Cambia el color del texto del header
+      headerShadowVisible: false,
+      headerTintColor: MyTheme.colors.black, // Cambia el color del texto del header
       headerTitleStyle: {
-        fontWeight: 'bold', // Cambia el estilo del título del header
+        ...globalStyles.headlineMedium,
       },
       animation: 'slide_from_right',
     }}>
-    <MainStack.Screen name="Plants" component={PlantsScreen} />
+    <MainStack.Screen
+      name="Plants"
+      component={PlantsScreen}
+      options={{
+        title: 'Mis Plantas',
+      }}
+    />
     {/* Agrega aquí más pantallas específicas del stack de Plants si las tienes */}
   </MainStack.Navigator>
 );
@@ -65,15 +79,22 @@ const CartStackScreen = () => (
   <MainStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: MyTheme.colors.primary, // Cambia el color de fondo del header
+        backgroundColor: MyTheme.colors.background,
       },
-      headerTintColor: '#fff', // Cambia el color del texto del header
+      headerShadowVisible: false,
+      headerTintColor: MyTheme.colors.black, // Cambia el color del texto del header
       headerTitleStyle: {
-        fontWeight: 'bold', // Cambia el estilo del título del header
+        ...globalStyles.headlineMedium,
       },
       animation: 'slide_from_right',
     }}>
-    <MainStack.Screen name="Cart" component={CartScreen} />
+    <MainStack.Screen
+      name="Cart"
+      component={CartScreen}
+      options={{
+        title: 'Mi Carrito',
+      }}
+    />
     {/* Agrega aquí más pantallas específicas del stack de Cart si las tienes */}
   </MainStack.Navigator>
 );
@@ -82,41 +103,92 @@ const ProfileStackScreen = () => (
   <MainStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: MyTheme.colors.primary, // Cambia el color de fondo del header
+        backgroundColor: MyTheme.colors.background,
       },
-      headerTintColor: '#fff', // Cambia el color del texto del header
+      headerShadowVisible: false,
+      headerTintColor: MyTheme.colors.black, // Cambia el color del texto del header
       headerTitleStyle: {
-        fontWeight: 'bold', // Cambia el estilo del título del header
+        ...globalStyles.headlineMedium,
       },
       animation: 'slide_from_right',
     }}>
-    <MainStack.Screen name="Profile" component={ProfileScreen} />
+    <MainStack.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{
+        title: 'Mi Perfil',
+      }}
+    />
     {/* Agrega aquí más pantallas específicas del stack de Profile si las tienes */}
   </MainStack.Navigator>
 );
 
 // Crear el Tab Navigator dentro del Stack Navigator global
 const BottomTabsNavigator = () => (
-  <Tab.Navigator>
+  <Tab.Navigator
+    screenOptions={{
+      tabBarStyle: {
+        backgroundColor: MyTheme.colors.navBar, // Color de fondo del Tab Navigator (verde claro)
+        height: 70, // Ajuste de la altura
+        paddingBottom: 10, // Espaciado inferior adicional
+        paddingTop: 10, // Espaciado superior adicional
+      },
+      tabBarActiveTintColor: '#34a110', // Color del icono y texto activo
+      tabBarInactiveTintColor: '#696767', // Color del icono y texto inactivo
+      tabBarLabelStyle: {
+        fontSize: 12,
+        fontWeight: 'bold',
+      },
+      tabBarIconStyle: {
+        marginTop: -5, // Ajuste para centrar mejor el icono
+      },
+      tabBarItemStyle: {
+        justifyContent: 'center',
+      },
+    }}>
     <Tab.Screen
       name="HomeTab"
       component={HomeStackScreen}
-      options={{headerShown: false}}
+      options={{
+        headerShown: false,
+        title: 'Inicio',
+        tabBarIcon: ({color}) => (
+          <Icon name="home-outline" color={color} size={24} />
+        ),
+      }}
     />
     <Tab.Screen
       name="PlantsTab"
       component={PlantsStackScreen}
-      options={{headerShown: false}}
+      options={{
+        headerShown: false,
+        title: 'Mis plantas',
+        tabBarIcon: ({color}) => (
+          <Icon name="leaf-outline" color={color} size={24} />
+        ),
+      }}
     />
     <Tab.Screen
       name="CartTab"
       component={CartStackScreen}
-      options={{headerShown: false}}
+      options={{
+        headerShown: false,
+        title: 'Mi Carrito',
+        tabBarIcon: ({color}) => (
+          <Icon name="cart-outline" color={color} size={24} />
+        ),
+      }}
     />
     <Tab.Screen
       name="ProfileTab"
       component={ProfileStackScreen}
-      options={{headerShown: false}}
+      options={{
+        headerShown: false,
+        title: 'Mi Perfil',
+        tabBarIcon: ({color}) => (
+          <Icon name="person-outline" color={color} size={24} />
+        ),
+      }}
     />
   </Tab.Navigator>
 );

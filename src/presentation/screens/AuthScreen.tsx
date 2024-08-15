@@ -11,6 +11,7 @@ import {
 } from '@react-navigation/native';
 import {type RootStackParamList} from '../routes/BottomTabsNavegator';
 import {MyTheme, globalStyles} from '../theme/global.styles';
+import firestore from '@react-native-firebase/firestore';
 
 GoogleSignin.configure({
   webClientId:
@@ -28,6 +29,40 @@ async function onGoogleButtonPress() {
   return auth().signInWithCredential(googleCredential);
 }
 
+const saveUserToFirestore = async () => {
+  const user = auth().currentUser;
+
+  if (user) {
+    // Verificar si el usuario ya existe
+    const userDoc = await firestore()
+      .collection('usuarios')
+      .doc(user.uid)
+      .get();
+
+    if (!userDoc.exists) {
+      // Crear un nuevo documento para el usuario
+      await firestore()
+        .collection('usuarios')
+        .doc(user.uid)
+        .set({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          console.log('Usuario guardado en Firestore!');
+        })
+        .catch(error => {
+          console.error('Error al guardar el usuario en Firestore: ', error);
+        });
+    } else {
+      console.log('El usuario ya existe en Firestore.');
+    }
+  }
+};
+
 export const AuthScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
@@ -36,9 +71,10 @@ export const AuthScreen = () => {
         mode="contained"
         style={{marginBottom: 16, marginTop: 24}}
         onPress={async () => {
-          onGoogleButtonPress().then(() =>
-            console.log('Inició sesión con Google!'),
-          );
+          onGoogleButtonPress().then(() => {
+            console.log('Inició sesión con Google!');
+            saveUserToFirestore();
+          });
         }}>
         Iniciar sesión con Google
       </Button>
