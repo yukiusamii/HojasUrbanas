@@ -61,7 +61,7 @@ export const CartCard = ({
           uri: img_url,
           priority: FastImage.priority.normal,
         }}
-        resizeMode={FastImage.resizeMode.contain}
+        resizeMode={FastImage.resizeMode.cover}
       />
 
       <View style={styles.cardWrap}>
@@ -77,7 +77,10 @@ export const CartCard = ({
           <IconButton
             icon="close"
             size={20}
-            onPress={() => console.log('Borrar:', nombre_comun)}></IconButton>
+            onPress={() => {
+              console.log('Borrar:', nombre_comun);
+              deleteProduct(id);
+            }}></IconButton>
         </View>
 
         <View style={styles.cardWrapRow}>
@@ -96,12 +99,51 @@ export const CartCard = ({
                     source={require('../../assets/img/arrow_drop_down.png')}></Image>
                 </Pressable>
               }>
-              <Menu.Item onPress={() => handleQuantityChange(1)} title="1" />
-              <Menu.Item onPress={() => handleQuantityChange(2)} title="2" />
-              <Menu.Item onPress={() => handleQuantityChange(3)} title="3" />
-              <Menu.Item onPress={() => handleQuantityChange(4)} title="4" />
+              <Menu.Item
+                onPress={() => {
+                  handleQuantityChange(1);
+                  modifyCant(id, 1);
+                }}
+                title="1"
+              />
+              <Menu.Item
+                onPress={() => {
+                  handleQuantityChange(2);
+                  modifyCant(id, 2);
+                }}
+                title="2"
+              />
+              <Menu.Item
+                onPress={() => {
+                  handleQuantityChange(3);
+                  modifyCant(id, 3);
+                }}
+                title="3"
+              />
+              <Menu.Item
+                onPress={() => {
+                  handleQuantityChange(4);
+                  modifyCant(id, 4);
+                }}
+                title="4"
+              />
+              <Menu.Item
+                onPress={() => {
+                  handleQuantityChange(5);
+                  modifyCant(id, 5);
+                }}
+                title="5"
+              />
             </Menu>
           </View>
+          <Text
+            style={{
+              ...globalStyles.titleLarge,
+              color: MyTheme.colors.primary,
+              marginRight: 16,
+            }}>
+            {(cantProd * precio).toFixed(2)}€
+          </Text>
         </View>
       </View>
     </Pressable>

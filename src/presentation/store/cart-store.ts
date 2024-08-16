@@ -10,7 +10,7 @@ interface productCart {
 
 export interface CartState {
   productos: Array<productCart>;
-
+  subtotal: number;
   addProduct: (
     id: string,
     cantProd: number,
@@ -21,9 +21,17 @@ export interface CartState {
   modifyCant: (id: string, cantProd: number) => void;
   deleteProduct: (id: string) => void;
 }
+const getSubtotal = (productos: Array<productCart>) => {
+  const total = productos.reduce((total, producto) => {
+    return total + producto.precio * producto.cantProd;
+  }, 0);
+
+  return total;
+};
 
 export const useCartStore = create<CartState>()((set, get) => ({
   productos: [], // Inicializamos productos como un array vacío
+  subtotal: 0,
 
   addProduct: (
     id: string,
@@ -47,7 +55,10 @@ export const useCartStore = create<CartState>()((set, get) => ({
         updatedProductos.push({id, cantProd, nombre_comun, img_url, precio});
       }
 
-      return {productos: updatedProductos};
+      return {
+        productos: updatedProductos,
+        subtotal: getSubtotal(updatedProductos),
+      };
     });
   },
 
@@ -60,7 +71,10 @@ export const useCartStore = create<CartState>()((set, get) => ({
       if (existingProductIndex !== -1) {
         const updatedProductos = [...state.productos];
         updatedProductos[existingProductIndex].cantProd = cantProd;
-        return {productos: updatedProductos};
+        return {
+          productos: updatedProductos,
+          subtotal: getSubtotal(updatedProductos),
+        };
       }
 
       return state; // No hacer nada si el producto no existe
@@ -73,7 +87,10 @@ export const useCartStore = create<CartState>()((set, get) => ({
         product => product.id !== id,
       );
 
-      return {productos: updatedProductos};
+      return {
+        productos: updatedProductos,
+        subtotal: getSubtotal(updatedProductos),
+      };
     });
   },
 }));
