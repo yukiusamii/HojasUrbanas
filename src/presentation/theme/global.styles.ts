@@ -15,6 +15,7 @@ export const MyTheme = {
     lightGrey: '#b7b7b7',
     black: '#1A1A1A',
     navBar: '#D4F5D4',
+    white: '#ffffff',
     // Puedes personalizar otros colores según necesites
   },
 };
@@ -24,6 +25,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   topLeftContainer: {
     flex: 1,

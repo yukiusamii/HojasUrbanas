@@ -1,16 +1,50 @@
 import {create} from 'zustand';
 
 export interface ProfileState {
-  name: string;
-  email: string;
+  uid: string | undefined;
+  name: string | null | undefined;
+  userName: string | null | undefined;
+  email: string | null | undefined;
+  photoURL: string | undefined;
+  bibliografia: string | undefined;
+  direccion: string | undefined;
 
-  changeProfile: (name?: string, email?: string) => void;
+  changeProfile: (
+    uid: string | undefined,
+    name: string | null | undefined,
+    userName: string | null | undefined,
+    email: string | null | undefined,
+    photoURL: string | undefined,
+    bibliografia: string | undefined,
+    direccion: string | undefined,
+  ) => void;
 }
 
 export const useProfileStore = create<ProfileState>()((set, get) => ({
-  name: 'Yuri',
-  email: ' yuri@mail.com',
-  changeProfile: (name?: string, email?: string) => {
-    set({name: name, email: email});
+  uid: '',
+  name: '',
+  email: '',
+  photoURL: '',
+  bibliografia: '',
+  userName: '',
+  direccion: '',
+  changeProfile: (
+    uid: string | undefined,
+    name: string | null | undefined,
+    userName: string | null | undefined,
+    email: string | null | undefined,
+    photoURL: string | undefined,
+    bibliografia: string | undefined,
+    direccion: string | undefined,
+  ) => {
+    set({
+      uid: uid,
+      name: name,
+      userName: userName,
+      email: email,
+      photoURL: photoURL,
+      bibliografia: bibliografia,
+      direccion: direccion,
+    });
   },
 }));

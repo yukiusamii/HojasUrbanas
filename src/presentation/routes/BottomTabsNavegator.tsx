@@ -8,14 +8,21 @@ import {ProfileScreen} from '../screens/ProfileScreen';
 import {AuthScreen} from '../screens/AuthScreen';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {InfoProfileScreen} from '../screens/InfoProfileScreen';
+import {EditProfileScreen} from '../screens/EditProfileScreen';
+import {MyPlantsScreen} from '../screens/MyPlantsScreen';
 export type RootStackParamList = {
-  Home: {id: string};
+  Home: undefined;
   Plants: undefined;
   Cart: undefined;
   Profile: undefined;
   MainTabs: undefined;
   Prueba: undefined;
-  Auth: undefined;
+  Auth: {pantalla: string};
+  InfoProfile: undefined;
+  EditProfile: {firstTime: boolean};
+  MyPlants: undefined;
+  ProfileTab: undefined;
 };
 
 // Crear el Stack Navigator global
@@ -72,6 +79,13 @@ const PlantsStackScreen = () => (
         title: 'Mis Plantas',
       }}
     />
+    <MainStack.Screen
+      name="MyPlants"
+      component={MyPlantsScreen}
+      options={{
+        title: 'Mis Plantas',
+      }}
+    />
     {/* Agrega aquí más pantallas específicas del stack de Plants si las tienes */}
   </MainStack.Navigator>
 );
@@ -118,6 +132,13 @@ const ProfileStackScreen = () => (
       component={ProfileScreen}
       options={{
         title: 'Mi Perfil',
+      }}
+    />
+    <MainStack.Screen
+      name="InfoProfile"
+      component={InfoProfileScreen}
+      options={{
+        headerShown: false,
       }}
     />
     {/* Agrega aquí más pantallas específicas del stack de Profile si las tienes */}
@@ -214,6 +235,14 @@ export const MainStackNavigator = () => (
     />
 
     <MainStack.Screen name="Prueba" component={PruebasScreen} />
+
+    <MainStack.Screen
+      name="EditProfile"
+      component={EditProfileScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
 
     {/* Aquí puedes agregar más pantallas globales que estén fuera del TabNavigator */}
 

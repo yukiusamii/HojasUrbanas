@@ -1,34 +1,49 @@
-import {View} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
+
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import firestore from '@react-native-firebase/firestore';
 import {
   NavigationProp,
   RouteProp,
+  useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
 import {type RootStackParamList} from '../routes/BottomTabsNavegator';
-import {useProfileStore} from '../store/profile-store';
 import {MyTheme, globalStyles} from '../theme/global.styles';
+import {useProfileStore} from '../store/profile-store';
+import {Button} from 'react-native-paper';
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const name = useProfileStore(state => state.name);
-  const email = useProfileStore(state => state.email);
 
   return (
-    <View style={globalStyles.topLeftContainer}>
-      {/* <Text>ProfileScreen</Text> */}
-
-      <Text style={globalStyles.titleLarge}>{name}</Text>
-      <Text style={globalStyles.titleLarge}>{email}</Text>
-      {/* <Button
-        mode="contained"
-        style={{marginBottom: 16, marginTop: 24}}
-        onPress={async () => {
-          navigation.navigate('Prueba');
+    <View style={globalStyles.centerContainer}>
+      <Button
+        onPress={() => {
+          navigation.navigate('Auth', {pantalla: 'InfoProfile'});
         }}>
-        Go to Prueba
-      </Button> */}
+        Iniciar Sesión
+      </Button>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  googleBtn: {
+    borderRadius: 43,
+    shadowColor: 'rgba(30, 30, 30, 0.6)',
+    shadowOffset: {
+      width: 0,
+      height: 16,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 5,
+    marginTop: 20,
+  },
+  googleBtnPressed: {
+    elevation: 1,
+  },
+});
