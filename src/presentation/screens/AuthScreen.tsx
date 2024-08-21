@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {Image, Pressable, StyleSheet, View} from 'react-native';
@@ -65,19 +65,18 @@ const saveUserToFirestore = async () => {
 };
 export const AuthScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const params = useRoute<RouteProp<RootStackParamList, 'Auth'>>().params;
 
   const changeProfile = useProfileStore(state => state.changeProfile);
-  useFocusEffect(
-    useCallback(() => {
-      console.log('Holaaa???');
-      const user = auth().currentUser;
-      if (user) {
-        fillProfile(user);
-      }
-      return () => {};
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     console.log('Holaaa???');
+  //     const user = auth().currentUser;
+  //     if (user) {
+  //       fillProfile(user);
+  //     }
+  //     return () => {};
+  //   }, []),
+  // );
 
   const fillProfile = async (user: any) => {
     const userdataSnapshot = await firestore()
@@ -108,20 +107,7 @@ export const AuthScreen = () => {
           userdata.biografia,
           userdata.direccion,
         );
-
-        switch (params.pantalla) {
-          case 'MyPlants':
-            navigation.navigate('MyPlants');
-            break;
-
-          case 'MyCart':
-            navigation.navigate('MyPlants'); //PENDIENTE AQUI
-            break;
-
-          default:
-            navigation.navigate('InfoProfile');
-            break;
-        }
+        navigation.navigate('MainTabs');
       }
     }
   };
@@ -139,21 +125,15 @@ export const AuthScreen = () => {
 
   return (
     <View style={globalStyles.centerContainer}>
-      {auth().currentUser ? (
-        <View style={globalStyles.centerContainer}>
-          <Image source={require('../../assets/img/iniciar_sesion.png')} />
-          <Pressable
-            style={({pressed}) => [
-              styles.googleBtn,
-              pressed && styles.googleBtnPressed,
-            ]}
-            onPress={handleGoogleLogin}>
-            <Image source={require('../../assets/img/google_btn.png')} />
-          </Pressable>
-        </View>
-      ) : (
-        <View></View>
-      )}
+      <Image source={require('../../assets/img/iniciar_sesion.png')} />
+      <Pressable
+        style={({pressed}) => [
+          styles.googleBtn,
+          pressed && styles.googleBtnPressed,
+        ]}
+        onPress={handleGoogleLogin}>
+        <Image source={require('../../assets/img/google_btn.png')} />
+      </Pressable>
     </View>
   );
 };

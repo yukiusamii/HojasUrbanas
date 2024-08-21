@@ -10,19 +10,19 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {type RootStackParamList} from '../routes/BottomTabsNavegator';
+// import {type RootStackParamList} from '../routes/BottomTabsNavegator';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import {useProfileStore} from '../store/profile-store';
 import {Button} from 'react-native-paper';
 
 export const ProfileScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  // const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View style={globalStyles.centerContainer}>
       <Button
         onPress={() => {
-          navigation.navigate('Auth', {pantalla: 'InfoProfile'});
+          // navigation.navigate('Auth', {pantalla: 'InfoProfile'});
         }}>
         Iniciar Sesión
       </Button>

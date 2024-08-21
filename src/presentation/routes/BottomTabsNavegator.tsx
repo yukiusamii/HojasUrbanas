@@ -129,9 +129,10 @@ const ProfileStackScreen = () => (
     }}>
     <MainStack.Screen
       name="Profile"
-      component={ProfileScreen}
+      component={InfoProfileScreen}
       options={{
         title: 'Mi Perfil',
+        headerShown: false,
       }}
     />
     <MainStack.Screen
@@ -228,6 +229,7 @@ export const MainStackNavigator = () => (
       },
       animation: 'slide_from_right',
     }}>
+    <MainStack.Screen name="Auth" component={AuthScreen} />
     <MainStack.Screen
       name="MainTabs"
       component={BottomTabsNavigator}
@@ -245,7 +247,5 @@ export const MainStackNavigator = () => (
     />
 
     {/* Aquí puedes agregar más pantallas globales que estén fuera del TabNavigator */}
-
-    <MainStack.Screen name="Auth" component={AuthScreen} />
   </MainStack.Navigator>
 );
