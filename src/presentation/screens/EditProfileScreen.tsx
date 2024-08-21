@@ -193,7 +193,7 @@ export const EditProfileScreen = () => {
         style={styles.back}
         icon="arrow-back"
         size={35}
-        iconColor={'#fff'}
+        iconColor={MyTheme.colors.accent}
         onPress={handleBackPress} // Abrir el modal de confirmación
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: MyTheme.colors.navBar,
   },
   back: {
+    backgroundColor: 'rgba(212, 245, 212, 0.6)',
     position: 'absolute',
     left: 0,
     top: 0,

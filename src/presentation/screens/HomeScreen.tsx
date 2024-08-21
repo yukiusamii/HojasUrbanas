@@ -15,11 +15,13 @@ import {useProfileStore} from '../store/profile-store';
 import {Planta} from '../models/models';
 import {FAB, IconButton, Searchbar} from 'react-native-paper';
 import {useAllStore} from '../store/all-store';
-
+import {RootStackParamList} from '../routes/BottomTabsNavegator';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 export const HomeScreen = () => {
   const [data, setData] = useState<Planta[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState<{[key: string]: string}>({});
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // const getImageUrl = async (imgUrl: string) => {
   //   if (
@@ -52,22 +54,6 @@ export const HomeScreen = () => {
 
         const plantasData: Planta[] = plantasCollection.docs.map(doc => {
           const docData = doc.data();
-
-          // descripcion: string; // Descripción del bulbo florífero
-          // enfermedades: Enfermedad[]; // Array de enfermedades
-          // etiquetas: Etiquetas; // Mapa de etiquetas
-          // id: string; // ID de la planta
-          // id_modelo: number; // ID del modelo
-          // img_url: string; // URL de la imagen
-          // luz: Luz; // Mapa de características de la luz
-          // nom_comun: string; // Nombre común de la planta
-          // nombre_cientifico: string; // Nombre científico de la planta
-          // nombre_comun: string; // Nombre común
-          // precio: number; // Precio de la planta
-          // riego: Riego; // Mapa de características de riego
-          // stock: number; // Cantidad en stock
-          // temperatura: Temperatura; // Mapa de temperatura
-          // tierra: string; // Tipo de tierra
           return {
             descripcion: docData.descripcion, // Descripción del bulbo florífero
             enfermedades: docData.enfermedades.map((enfermedad: any) => ({
@@ -182,6 +168,7 @@ export const HomeScreen = () => {
           <ProductCard
             onPress={() => {
               console.log('Has pulsado: ', item.nombre_comun);
+              navigation.navigate('Detail', {id: item.id, type: item.type});
             }}
             id={item.id}
             nombre_comun={item.nombre_comun}

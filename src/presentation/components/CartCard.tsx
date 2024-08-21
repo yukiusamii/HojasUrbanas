@@ -55,14 +55,21 @@ export const CartCard = ({
         styles.listItem,
         pressed && styles.listItemPressed,
       ]}>
-      <FastImage
-        style={styles.image}
-        source={{
-          uri: img_url,
-          priority: FastImage.priority.normal,
-        }}
-        resizeMode={FastImage.resizeMode.cover}
-      />
+      {!img_url || img_url === '' || img_url.startsWith('gs') ? (
+        <Image
+          style={styles.image}
+          source={require('../../assets/img/default_plant_img.png')}
+        />
+      ) : (
+        <FastImage
+          style={styles.image}
+          source={{
+            uri: img_url,
+            priority: FastImage.priority.normal,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      )}
 
       <View style={styles.cardWrap}>
         <View

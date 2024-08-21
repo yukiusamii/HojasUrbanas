@@ -31,7 +31,7 @@ export const PlantCard = ({
         styles.listItem,
         pressed && styles.listItemPressed,
       ]}>
-      {img_url || img_url === '' ? (
+      {!img_url || img_url === '' || img_url.startsWith('gs') ? (
         <Image
           style={styles.image}
           source={require('../../assets/img/default_plant_img.png')}

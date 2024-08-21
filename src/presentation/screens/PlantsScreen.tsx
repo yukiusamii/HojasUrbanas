@@ -33,6 +33,7 @@ export const PlantsScreen = () => {
       ) : (
         <View style={{flex: 1}}>
           <FlatList
+            style={styles.flatList}
             data={misPlantas}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
@@ -114,5 +115,10 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: MyTheme.colors.navBar,
+  },
+  flatList: {
+    // backgroundColor: MyTheme.colors.background,
+    paddingBottom: 10,
+    flex: 1,
   },
 });

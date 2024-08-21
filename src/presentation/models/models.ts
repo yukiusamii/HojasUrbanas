@@ -15,10 +15,11 @@ export interface Planta {
   stock: number; // Cantidad en stock
   temperatura: Temperatura; // Mapa de temperatura
   tierra: string; // Tipo de tierra
-  rating: {
+  rating?: {
     nota: number;
     total: number;
   };
+  type?: string;
 }
 
 interface Enfermedad {

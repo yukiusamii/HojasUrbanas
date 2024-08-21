@@ -37,9 +37,10 @@ export const InfoProfileScreen = () => {
       <View style={styles.edit}>
         <Text style={styles.name}>{userName}</Text>
         <IconButton
-          icon="create"
+          icon="create-outline"
           size={30}
-          iconColor={'#fff'}
+          iconColor={MyTheme.colors.accent}
+          style={{backgroundColor: 'rgba(212, 245, 212, 0.6)'}}
           onPress={() => {
             navigation.navigate('EditProfile', {firstTime: false});
           }}
