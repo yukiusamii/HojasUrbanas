@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
 import {Button} from 'react-native-paper';
@@ -32,14 +32,29 @@ export const ProductCard = ({
         styles.listItem,
         pressed && styles.listItemPressed,
       ]}>
-      <FastImage
+      {!img_url || img_url === '' || img_url.startsWith('gs') ? (
+        <Image
+          style={styles.image}
+          source={require('../../assets/img/default_plant_img_big.png')}
+        />
+      ) : (
+        <FastImage
+          style={styles.image}
+          source={{
+            uri: img_url,
+            priority: FastImage.priority.normal,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      )}
+      {/* <FastImage
         style={styles.image}
         source={{
           uri: img_url,
           priority: FastImage.priority.normal,
         }}
         resizeMode={FastImage.resizeMode.cover}
-      />
+      /> */}
       <View style={styles.cardWrap}>
         <View style={styles.cardWrapRow}>
           <Text

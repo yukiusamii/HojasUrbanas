@@ -11,6 +11,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {InfoProfileScreen} from '../screens/InfoProfileScreen';
 import {EditProfileScreen} from '../screens/EditProfileScreen';
 import {MyPlantsScreen} from '../screens/MyPlantsScreen';
+import {NameScreen} from '../screens/NameScreen';
+import {AddPlantByNameScreen} from '../screens/AddPlantByNameScreen';
 export type RootStackParamList = {
   Home: undefined;
   Plants: undefined;
@@ -18,11 +20,13 @@ export type RootStackParamList = {
   Profile: undefined;
   MainTabs: undefined;
   Prueba: undefined;
-  Auth: {pantalla: string};
+  Auth: undefined;
   InfoProfile: undefined;
   EditProfile: {firstTime: boolean};
   MyPlants: undefined;
   ProfileTab: undefined;
+  Name: undefined;
+  AddPlantByName: undefined;
 };
 
 // Crear el Stack Navigator global
@@ -221,15 +225,25 @@ export const MainStackNavigator = () => (
   <MainStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: MyTheme.colors.primary, // Cambia el color de fondo del header
+        backgroundColor: MyTheme.colors.background,
       },
-      headerTintColor: '#fff', // Cambia el color del texto del header
+      headerShadowVisible: false,
+      headerTintColor: MyTheme.colors.black, // Cambia el color del texto del header
       headerTitleStyle: {
-        fontWeight: 'bold', // Cambia el estilo del título del header
+        ...globalStyles.headlineMedium,
       },
       animation: 'slide_from_right',
     }}>
-    <MainStack.Screen name="Auth" component={AuthScreen} />
+    <MainStack.Screen
+      name="Name"
+      component={NameScreen}
+      options={{headerShown: false}}
+    />
+    <MainStack.Screen
+      name="Auth"
+      component={AuthScreen}
+      options={{title: 'Iniciar Sesión'}}
+    />
     <MainStack.Screen
       name="MainTabs"
       component={BottomTabsNavigator}
@@ -243,6 +257,14 @@ export const MainStackNavigator = () => (
       component={EditProfileScreen}
       options={{
         headerShown: false,
+      }}
+    />
+    <MainStack.Screen
+      name="AddPlantByName"
+      component={AddPlantByNameScreen}
+      options={{
+        // headerShown: false,
+        title: 'Añadir Planta',
       }}
     />
 

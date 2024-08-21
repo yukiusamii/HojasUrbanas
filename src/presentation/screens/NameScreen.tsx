@@ -2,8 +2,14 @@ import {View, Text, Animated, StyleSheet} from 'react-native';
 import {CameraAdapter} from '../adapters/camera-adapter';
 import {Button} from 'react-native-paper';
 import {useEffect, useRef} from 'react';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../routes/StackNavigator';
+import {
+  NavigationProp,
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {type RootStackParamList} from '../routes/BottomTabsNavegator';
 import {white} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 
@@ -23,7 +29,7 @@ export const NameScreen = () => {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{name: 'PruebasScreen'}],
+          routes: [{name: 'Auth'}],
         }); // Reemplaza con el nombre de la pantalla a la que deseas navegar
       }, 1500); // Reemplaza con el nombre de la pantalla a la que deseas navegar
     });

@@ -14,28 +14,31 @@ import {globalStyles, MyTheme} from '../theme/global.styles';
 import {useProfileStore} from '../store/profile-store';
 import {Planta} from '../models/models';
 import {FAB, IconButton, Searchbar} from 'react-native-paper';
+import {useAllStore} from '../store/all-store';
 
 export const HomeScreen = () => {
   const [data, setData] = useState<Planta[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState<{[key: string]: string}>({});
 
-  const getImageUrl = async (imgUrl: string) => {
-    if (
-      !imgUrl ||
-      (!imgUrl.startsWith('gs://') && !imgUrl.startsWith('https://'))
-    ) {
-      return null;
-    }
-    try {
-      const url = await storage().refFromURL(imgUrl).getDownloadURL();
-      return url;
-    } catch (error) {
-      console.error('Error al obtener la URL de la imagen:', error);
-      return null;
-    }
-  };
+  // const getImageUrl = async (imgUrl: string) => {
+  //   if (
+  //     !imgUrl ||
+  //     (!imgUrl.startsWith('gs://') && !imgUrl.startsWith('https://'))
+  //   ) {
+  //     return null;
+  //   }
+  //   try {
+  //     console.log('???????????????????????', imgUrl);
+  //     const url = await storage().refFromURL(imgUrl).getDownloadURL();
+  //     return url;
+  //   } catch (error) {
+  //     console.error('Error al obtener la URL de la imagen:', error);
+  //     return null;
+  //   }
+  // };
   const [searchQuery, setSearchQuery] = React.useState('');
+  const setPlantas = useAllStore(state => state.setPlantas);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
   useEffect(() => {
@@ -49,33 +52,79 @@ export const HomeScreen = () => {
 
         const plantasData: Planta[] = plantasCollection.docs.map(doc => {
           const docData = doc.data();
+
+          // descripcion: string; // Descripción del bulbo florífero
+          // enfermedades: Enfermedad[]; // Array de enfermedades
+          // etiquetas: Etiquetas; // Mapa de etiquetas
+          // id: string; // ID de la planta
+          // id_modelo: number; // ID del modelo
+          // img_url: string; // URL de la imagen
+          // luz: Luz; // Mapa de características de la luz
+          // nom_comun: string; // Nombre común de la planta
+          // nombre_cientifico: string; // Nombre científico de la planta
+          // nombre_comun: string; // Nombre común
+          // precio: number; // Precio de la planta
+          // riego: Riego; // Mapa de características de riego
+          // stock: number; // Cantidad en stock
+          // temperatura: Temperatura; // Mapa de temperatura
+          // tierra: string; // Tipo de tierra
           return {
-            nombre_comun: docData.nombre_comun,
-            descripcion: docData.descripcion,
-            img_url: docData.img_url,
-            precio: docData.precio,
-            id: docData.id,
-            // Agrega otros campos que tengas en tu documento de planta
+            descripcion: docData.descripcion, // Descripción del bulbo florífero
+            enfermedades: docData.enfermedades.map((enfermedad: any) => ({
+              cuidados: enfermedad.cuidados,
+              descripcion: enfermedad.descripcion,
+              nombre: enfermedad.nombre,
+            })), // Array de enfermedades con sus respectivos cuidados, descripción y nombre
+            etiquetas: {
+              cuidado: docData.etiquetas.cuidado,
+              localizacion: docData.etiquetas.localizacion,
+              luz: docData.etiquetas.luz,
+              riego: docData.etiquetas.riego,
+              toxicidad: docData.etiquetas.toxicidad,
+            }, // Mapa de etiquetas
+            fertilizacion: docData.fertilizacion,
+            id: docData.id, // ID de la planta
+            id_modelo: docData.id_modelo, // ID del modelo
+            img_url: docData.img_url, // URL de la imagen
+            luz: {
+              adecuada: docData.luz.adecuada,
+              preferida: docData.luz.preferida,
+            }, // Mapa de características de la luz
+            nom_comun: docData.nom_comun, // Nombre común de la planta
+            nombre_cientifico: docData.nombre_cientifico, // Nombre científico de la planta
+            nombre_comun: docData.nombre_comun, // Nombre común
+            precio: docData.precio, // Precio de la planta
+            riego: {
+              caracteristicas: docData.riego.caracteristicas,
+              invierno: docData.riego.invierno,
+              verano: docData.riego.verano,
+            }, // Mapa de características de riego
+            stock: docData.stock, // Cantidad en stock
+            temperatura: {
+              ideal: docData.temperatura.ideal,
+              zona_rustica: docData.temperatura.zona_rustica,
+            }, // Mapa de temperatura
+            tierra: docData.tierra, // Tipo de tierra
           } as Planta;
         });
 
         setData(plantasData);
+        setPlantas(plantasData);
+        // const urls: {[key: string]: string} = {};
+        // for (const planta of plantasData) {
+        //   console.log(
+        //     '-----------------*Precio Planta: ',
+        //     planta.nombre_comun,
+        //     planta.precio,
+        //   );
 
-        const urls: {[key: string]: string} = {};
-        for (const planta of plantasData) {
-          console.log(
-            '-----------------*Precio Planta: ',
-            planta.nombre_comun,
-            planta.precio,
-          );
+        //   const url = await getImageUrl(planta.img_url);
+        //   if (url) {
+        //     urls[planta.img_url] = url;
+        //   }
+        // }
 
-          const url = await getImageUrl(planta.img_url);
-          if (url) {
-            urls[planta.img_url] = url;
-          }
-        }
-
-        setImageUrls(urls);
+        // setImageUrls(urls);
       } catch (error) {
         console.error('Error getting documents: ', error);
       } finally {
@@ -136,7 +185,7 @@ export const HomeScreen = () => {
             }}
             id={item.id}
             nombre_comun={item.nombre_comun}
-            img_url={imageUrls[item.img_url]}
+            img_url={item.img_url}
             precio={item.precio}
             rating={{nota: 4.2, total: 3}}
           />
