@@ -13,8 +13,9 @@ import {Button, IconButton} from 'react-native-paper';
 import axios from 'axios';
 import {CameraAdapter} from '../adapters/camera-adapter';
 import {useAllStore} from '../store/all-store';
+import {usePlantStore} from '../store/plant-store';
 
-export const ResponseScreen = () => {
+export const AddPlantByPhotoScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Response'>>().params;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [loading, setLoading] = useState(false);
@@ -22,17 +23,22 @@ export const ResponseScreen = () => {
   const [confidence, setConfidence] = useState(0);
   const [name, setName] = useState('');
   const plantas = useAllStore(state => state.plantas);
-  const goToInfo = async () => {
+  const addPlant = usePlantStore(state => state.addPlant);
+
+  const addToMyPlants = async () => {
     const plantaEncontrada = plantas.find(
       planta => planta.nombre_comun === name,
     );
 
     if (plantaEncontrada) {
-      const idPlanta = plantaEncontrada.id;
-      const typePlanta = plantaEncontrada.type;
-
-      console.log('ID de la planta encontrada:', idPlanta);
-      navigation.navigate('Detail', {id: idPlanta, type: typePlanta});
+      addPlant(
+        plantaEncontrada.nombre_comun,
+        plantaEncontrada.img_url,
+        plantaEncontrada.id,
+        plantaEncontrada.riego.verano,
+        plantaEncontrada.fertilizacion,
+      );
+      navigation.goBack();
     } else {
       console.log('Planta no encontrada');
     }
@@ -124,11 +130,11 @@ export const ResponseScreen = () => {
               <View style={styles.cardWrapRow}>
                 <Button
                   mode="contained"
-                  icon="information-circle-outline"
+                  icon="add"
                   onPress={async () => {
-                    goToInfo();
+                    addToMyPlants();
                   }}>
-                  Ver más información
+                  Añadir a mis plantas
                 </Button>
               </View>
               <View style={styles.cardWrapRow}>

@@ -6,6 +6,7 @@ import {usePlantStore} from '../store/plant-store';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {CameraAdapter} from '../adapters/camera-adapter';
 export const PlantsScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const misPlantas = usePlantStore(state => state.misPlantas);
@@ -76,9 +77,15 @@ export const PlantsScreen = () => {
             />
 
             <Button
-              icon="camera"
+              icon="camera-outline"
               mode="contained"
-              onPress={() => console.log('Identificar con foto')}
+              onPress={async () => {
+                hideModal();
+                const uriPhoto = await CameraAdapter.takePicture();
+                if (uriPhoto && uriPhoto.length > 0) {
+                  navigation.navigate('AddPlantPhoto', {uri: uriPhoto[0]});
+                }
+              }}
               style={{marginBottom: 16, marginTop: 45}}>
               Identificar con foto
             </Button>

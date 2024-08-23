@@ -15,6 +15,7 @@ import {NameScreen} from '../screens/NameScreen';
 import {AddPlantByNameScreen} from '../screens/AddPlantByNameScreen';
 import {DetailScreen} from '../screens/DetailScreen';
 import {ResponseScreen} from '../screens/ResponseScreen';
+import {AddPlantByPhotoScreen} from '../screens/AddPlantByPhotoScreen';
 export type RootStackParamList = {
   Home: undefined;
   Plants: undefined;
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   AddPlantByName: undefined;
   Detail: {id: string; type: string | null | undefined};
   Response: {uri: string};
+  AddPlantPhoto: {uri: string};
 };
 
 // Crear el Stack Navigator global
@@ -285,7 +287,16 @@ export const MainStackNavigator = () => (
       name="Response"
       component={ResponseScreen}
       options={{
-        // headerShown: false,
+        headerShown: false,
+        title: '',
+      }}
+    />
+
+    <MainStack.Screen
+      name="AddPlantPhoto"
+      component={AddPlantByPhotoScreen}
+      options={{
+        headerShown: false,
         title: '',
       }}
     />

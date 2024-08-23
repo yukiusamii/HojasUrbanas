@@ -169,4 +169,11 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
+
+  colCenterCenter: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
