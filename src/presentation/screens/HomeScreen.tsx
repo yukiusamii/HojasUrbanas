@@ -17,6 +17,7 @@ import {FAB, IconButton, Searchbar} from 'react-native-paper';
 import {useAllStore} from '../store/all-store';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {CameraAdapter} from '../adapters/camera-adapter';
 export const HomeScreen = () => {
   const [data, setData] = useState<Planta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -183,7 +184,12 @@ export const HomeScreen = () => {
         color={MyTheme.colors.primary}
         style={styles.fab}
         size="medium"
-        onPress={() => console.log('Abrir Cámara')}
+        onPress={async () => {
+          const uriPhoto = await CameraAdapter.takePicture();
+          if (uriPhoto && uriPhoto.length > 0) {
+            navigation.navigate('Response', {uri: uriPhoto[0]});
+          }
+        }}
       />
     </View>
   );

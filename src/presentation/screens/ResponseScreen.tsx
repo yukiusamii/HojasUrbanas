@@ -6,10 +6,11 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {RootStackParamList} from '../routes/StackNavigator';
+import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {useEffect, useState} from 'react';
 import {apiUrls} from './../config/urlsBuilder';
 import {Button} from 'react-native-paper';
+import axios from 'axios';
 
 export const ResponseScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Response'>>().params;
@@ -18,39 +19,46 @@ export const ResponseScreen = () => {
   const [estadoRespuesta, setEstadoRespuesta] = useState('sin respuesta');
   const [respuesta, setRespuesta] = useState(false);
   const [confidence, setConfidence] = useState(0);
+  const [name, setName] = useState('');
 
   const waitResponse = async () => {
-    // const response = await getResponse(
-    //   params.id,
-    //   params.proyectName,
-    //   params.modelId,
-    // );
-    // switch (response.status) {
-    //   case 'completed':
-    //     console.log(
-    //       '***************** Se ha completado y el resultado es: ',
-    //       response.isAnomalous,
-    //     );
-    //     setLoading(false);
-    //     setEstadoRespuesta('completed');
-    //     setConfidence(Math.round(response.confidence * 100));
-    //     setRespuesta(response.isAnomalous);
-    //     break;
+    const formData = new FormData();
 
-    //   default:
-    //     console.log('******* FALLO EN LA RESPUESTA *********');
+    // Leer el archivo como blob o base64 si es necesario
+    const file = {
+      uri: params.uri,
+      name: 'image.jpg',
+      type: 'image/jpeg', // Cambia esto si el tipo es diferente
+    };
 
-    //     setLoading(false);
-    //     setEstadoRespuesta('failed');
-    //     break;
-    // }
+    formData.append('image', file);
 
-    setTimeout(() => {
+    try {
+      const response = await axios.post(
+        'https://major-honestly-mallard.ngrok-free.app/predict',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+      console.log(JSON.stringify(response.data));
       setLoading(false);
       setEstadoRespuesta('completed');
-      setConfidence(Math.round(0.94 * 100));
-      setRespuesta(false);
-    }, 4500);
+      setConfidence(response.data.precision);
+      setName(response.data.nombre);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // setTimeout(() => {
+    //   setLoading(false);
+    //   setEstadoRespuesta('completed');
+    //   setConfidence(Math.round(0.94 * 100));
+    //   setRespuesta(false);
+    // }, 4500);
   };
   useEffect(() => {
     setLoading(true);
@@ -130,23 +138,6 @@ export const ResponseScreen = () => {
           {
             <View style={styles.container}>
               <Image source={{uri: params.uri}} style={styles.image} />
-              {/* <View
-                style={{
-                  ...styles.mascara,
-                }}>
-                <View
-                  style={{
-                    ...styles.confidence,
-                    backgroundColor: '#18A957',
-                  }}>
-                  <Text style={styles.confidenceText}>
-                    {respuesta ? 'ANOMALY' : 'NORMAL'}
-                  </Text>
-                  <Text style={styles.confidenceTextSmall}>
-                    Confidence level {confidence}%{' '}
-                  </Text>
-                </View>
-              </View> */}
             </View>
           }
 
@@ -162,25 +153,13 @@ export const ResponseScreen = () => {
                   ...globalStyles.headlineSmall,
                   color: MyTheme.colors.primary,
                 }}>
-                Aeonium
+                {name}
               </Text>{' '}
             </Text>
             <Text style={globalStyles.bodyLarge}>
-              con una confianza del 94.49%
+              con una confianza del {confidence}%
             </Text>
             <View style={styles.cardWrapRow}>
-              {/* <Button
-                mode="contained"
-                style={{marginBottom: 16, marginTop: 24, width: 80}}
-                onPress={async () => {
-                  navigation.reset({
-                    index: 0,
-                    routes: [{name: 'Inicio'}],
-                  });
-                }}>
-                Yes
-              </Button> */}
-
               <Button
                 mode="contained"
                 style={{marginBottom: 16, marginTop: 24}}
