@@ -13,7 +13,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import StarRating from 'react-native-star-rating-widget';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export const DetailScreen = () => {
+export const DetailProdScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Detail'>>().params;
   const [plant, setPlant] = React.useState<Planta | null>(null);
   const [loading, setLoading] = useState(true);

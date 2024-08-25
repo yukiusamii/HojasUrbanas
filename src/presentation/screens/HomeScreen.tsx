@@ -12,16 +12,15 @@ import firestore from '@react-native-firebase/firestore';
 import {ProductCard} from '../components/ProductCard';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import {useProfileStore} from '../store/profile-store';
-import {Planta} from '../models/models';
+import {Planta, Producto} from '../models/models';
 import {FAB, IconButton, Searchbar} from 'react-native-paper';
 import {useAllStore} from '../store/all-store';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {CameraAdapter} from '../adapters/camera-adapter';
 export const HomeScreen = () => {
-  const [data, setData] = useState<Planta[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [imageUrls, setImageUrls] = useState<{[key: string]: string}>({});
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // const getImageUrl = async (imgUrl: string) => {
@@ -44,6 +43,7 @@ export const HomeScreen = () => {
   const setPlantas = useAllStore(state => state.setPlantas);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -95,23 +95,31 @@ export const HomeScreen = () => {
           } as Planta;
         });
 
+        const productosCollection = await firestore()
+          .collection('productos')
+          .doc('productos')
+          .collection('productos')
+          .get();
+
+        const productosData: Producto[] = productosCollection.docs.map(doc => {
+          const docData = doc.data();
+          return {
+            descripcion: docData.descripcion,
+            id: docData.id,
+            img_url: docData.img_url,
+            nombre_comun: docData.nombre_comun,
+            precio: docData.precio,
+            stock: docData.stock, // Cantidad en stock
+            rating: {
+              nota: docData.rating.nota,
+              total: docData.rating.total,
+            },
+            type: docData.type,
+          } as Producto;
+        });
+
         setData(plantasData);
         setPlantas(plantasData);
-        // const urls: {[key: string]: string} = {};
-        // for (const planta of plantasData) {
-        //   console.log(
-        //     '-----------------*Precio Planta: ',
-        //     planta.nombre_comun,
-        //     planta.precio,
-        //   );
-
-        //   const url = await getImageUrl(planta.img_url);
-        //   if (url) {
-        //     urls[planta.img_url] = url;
-        //   }
-        // }
-
-        // setImageUrls(urls);
       } catch (error) {
         console.error('Error getting documents: ', error);
       } finally {

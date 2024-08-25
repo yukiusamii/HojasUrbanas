@@ -15,10 +15,7 @@ export interface Planta {
   stock: number; // Cantidad en stock
   temperatura: Temperatura; // Mapa de temperatura
   tierra: string; // Tipo de tierra
-  rating?: {
-    nota: number;
-    total: number;
-  };
+  rating?: Rating;
   type?: string;
 }
 
@@ -50,4 +47,20 @@ interface Riego {
 interface Temperatura {
   ideal: string; // Rango de temperatura ideal (ej. "12 - 18 ºC")
   zona_rustica: string; // Zonas de rusticidad (ej. "4 - 10")
+}
+
+export interface Producto {
+  descripcion: string;
+  id: string;
+  img_url: string;
+  nombre_comun: string;
+  precio: number;
+  stock: number;
+  rating?: Rating;
+  type?: string;
+}
+
+interface Rating {
+  nota: string;
+  total: string;
 }
