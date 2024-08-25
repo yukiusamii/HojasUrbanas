@@ -7,14 +7,24 @@ import {Planta} from '../models/models';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
 import {StyleSheet} from 'react-native';
-import {IconButton} from 'react-native-paper';
+import {Button, IconButton, List} from 'react-native-paper';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import StarRating from 'react-native-star-rating-widget';
 export const DetailScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Detail'>>().params;
   const [plant, setPlant] = React.useState<Planta | null>(null);
   const [loading, setLoading] = useState(true);
+  const [cantidadProd, setCantidadProd] = useState(1);
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const [isExpanded, setIsExpanded] = React.useState({
+    info: false,
+    riego: false,
+    luz: false,
+    tierra: false,
+  });
 
   const getPlant = async (id: string) => {
     try {
@@ -154,6 +164,117 @@ export const DetailScreen = () => {
             <Text style={styles.tagText}>{plant?.etiquetas.toxicidad}</Text>
           </View>
         </View>
+
+        <View style={{gap: 16, marginTop: 16}}>
+          <Text
+            style={{
+              ...globalStyles.headlineMedium,
+              color: MyTheme.colors.black,
+            }}>
+            {plant?.nombre_comun}
+          </Text>
+
+          <View style={globalStyles.rowCenterSpaceBetween}>
+            <Text
+              style={{
+                ...globalStyles.headlineMedium,
+                color: MyTheme.colors.black,
+              }}>
+              {plant?.precio}€
+            </Text>
+            <View style={globalStyles.rowCenterEnd}>
+              <StarRating
+                rating={4.1}
+                onChange={() => {}}
+                starSize={20} // Tamaño de las estrellas
+                starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
+                maxStars={5}
+              />
+              <Text> ({11})</Text>
+            </View>
+          </View>
+
+          <View style={globalStyles.rowCenterSpaceBetween}>
+            <View
+              style={{...globalStyles.rowCenterStart, gap: 8, marginLeft: -8}}>
+              <IconButton
+                style={styles.btnCant}
+                icon="remove"
+                size={24}
+                iconColor={MyTheme.colors.accent}
+                onPress={() => {
+                  if (cantidadProd > 1) {
+                    setCantidadProd(cantidadProd - 1);
+                  }
+                }}
+              />
+              <Text
+                style={{
+                  ...globalStyles.titleLarge,
+                  color: MyTheme.colors.black,
+                }}>
+                {cantidadProd}
+              </Text>
+
+              <IconButton
+                style={styles.btnCant}
+                icon="add"
+                size={24}
+                iconColor={MyTheme.colors.accent}
+                onPress={() => {
+                  if (cantidadProd < 5) {
+                    setCantidadProd(cantidadProd + 1);
+                  }
+                }}
+              />
+            </View>
+            <Button
+              mode="contained"
+              icon="cart-outline"
+              onPress={() => {
+                // console.log('Has Añadido al carrito: ', nombre_comun);
+                // addProduct(id, 1, nombre_comun, img_url, precio);
+              }}>
+              Añadir al carrito
+            </Button>
+          </View>
+
+          <List.Section>
+            <List.Accordion
+              title="Información"
+              titleStyle={globalStyles.titleLarge}
+              expanded={isExpanded.info}
+              onPress={() =>
+                setIsExpanded(prev => ({...prev, info: !prev.info}))
+              }
+              right={props =>
+                isExpanded.info ? (
+                  <Image source={require('../../assets/img/up.png')} />
+                ) : (
+                  <Image source={require('../../assets/img/down.png')} />
+                )
+              }>
+              <Text style={{padding: 16}}>{plant?.descripcion}</Text>
+            </List.Accordion>
+
+            <List.Accordion
+              title="Tierra"
+              titleStyle={globalStyles.titleLarge}
+              expanded={isExpanded.tierra}
+              onPress={() =>
+                setIsExpanded(prev => ({...prev, tierra: !prev.tierra}))
+              }
+              right={props =>
+                isExpanded.tierra ? (
+                  <Image source={require('../../assets/img/up.png')} />
+                ) : (
+                  <Image source={require('../../assets/img/down.png')} />
+                )
+              }>
+              <Text style={{padding: 16}}>{plant?.tierra}</Text>
+            </List.Accordion>
+          </List.Section>
+        </View>
       </ScrollView>
     </View>
   );
@@ -190,5 +311,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
+  },
+  btnCant: {
+    backgroundColor: 'rgba(212, 245, 212, 0.6)',
   },
 });

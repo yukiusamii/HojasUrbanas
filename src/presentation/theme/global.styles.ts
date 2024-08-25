@@ -169,6 +169,12 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
+  rowCenterStart: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
 
   colCenterCenter: {
     display: 'flex',
