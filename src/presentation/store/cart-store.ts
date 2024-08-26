@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import firestore from '@react-native-firebase/firestore';
 import {useProfileStore} from './profile-store';
+import {ToastAndroid} from 'react-native';
 
 interface productCart {
   cantProd: number;
@@ -8,6 +9,7 @@ interface productCart {
   nombre_comun: string;
   img_url: string;
   precio: number;
+  type: string | null;
 }
 
 export interface CartState {
@@ -19,6 +21,7 @@ export interface CartState {
     nombre_comun: string,
     img_url: string,
     precio: number,
+    type: string | undefined,
   ) => void;
   modifyCant: (id: string, cantProd: number) => void;
   deleteProduct: (id: string) => void;
@@ -58,6 +61,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
     nombre_comun: string,
     img_url: string,
     precio: number,
+    type: string | null = null,
   ) => {
     const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
     set(state => {
@@ -68,11 +72,16 @@ export const useCartStore = create<CartState>()((set, get) => ({
       let updatedProductos = [...state.productos];
 
       if (existingProductIndex !== -1) {
-        // Si el producto ya existe, actualiza la cantidad
         updatedProductos[existingProductIndex].cantProd += cantProd;
       } else {
-        // Si el producto no existe, lo agrega
-        updatedProductos.push({id, cantProd, nombre_comun, img_url, precio});
+        updatedProductos.push({
+          id,
+          cantProd,
+          nombre_comun,
+          img_url,
+          precio,
+          type,
+        });
       }
 
       const newSubtotal = getSubtotal(updatedProductos);
@@ -80,6 +89,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
       // Guardar el carrito actualizado en Firebase
       saveCartToFirebase(uid || '', updatedProductos);
 
+      ToastAndroid.show('Producto añadido al carrito', ToastAndroid.SHORT);
       return {
         productos: updatedProductos,
         subtotal: newSubtotal,
@@ -102,7 +112,10 @@ export const useCartStore = create<CartState>()((set, get) => ({
 
         // Guardar el carrito actualizado en Firebase
         saveCartToFirebase(uid || '', updatedProductos);
-
+        ToastAndroid.show(
+          'Cantidad modificada del producto.',
+          ToastAndroid.SHORT,
+        );
         return {
           productos: updatedProductos,
           subtotal: newSubtotal,
@@ -125,7 +138,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
 
       // Guardar el carrito actualizado en Firebase
       saveCartToFirebase(uid || '', updatedProductos);
-
+      ToastAndroid.show('Producto eliminado', ToastAndroid.SHORT);
       return {
         productos: updatedProductos,
         subtotal: newSubtotal,

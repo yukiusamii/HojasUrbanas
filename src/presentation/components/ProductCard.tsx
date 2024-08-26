@@ -14,6 +14,7 @@ interface Props {
   };
   img_url: string;
   id: string;
+  type: string;
 }
 
 export const ProductCard = ({
@@ -23,6 +24,7 @@ export const ProductCard = ({
   precio,
   rating,
   id,
+  type,
 }: Props) => {
   const addProduct = useCartStore(state => state.addProduct);
   return (
@@ -86,7 +88,7 @@ export const ProductCard = ({
             icon="cart-outline"
             onPress={() => {
               console.log('Has Añadido al carrito: ', nombre_comun);
-              addProduct(id, 1, nombre_comun, img_url, precio);
+              addProduct(id, 1, nombre_comun, img_url, precio, type);
             }}>
             Añadir al carrito
           </Button>

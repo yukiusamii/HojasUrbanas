@@ -57,7 +57,7 @@ export interface Producto {
   precio: number;
   stock: number;
   rating: Rating;
-  type?: string;
+  type?: string | undefined;
 }
 
 interface Rating {

@@ -12,13 +12,14 @@ import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import StarRating from 'react-native-star-rating-widget';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useCartStore} from '../store/cart-store';
 
 export const DetailScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Detail'>>().params;
   const [plant, setPlant] = React.useState<Planta | null>(null);
   const [loading, setLoading] = useState(true);
   const [cantidadProd, setCantidadProd] = useState(1);
-
+  const addProduct = useCartStore(state => state.addProduct);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [isExpanded, setIsExpanded] = React.useState({
@@ -245,8 +246,17 @@ export const DetailScreen = () => {
               mode="contained"
               icon="cart-outline"
               onPress={() => {
-                // console.log('Has Añadido al carrito: ', nombre_comun);
-                // addProduct(id, 1, nombre_comun, img_url, precio);
+                console.log('Has Añadido al carrito: ', plant?.nombre_comun);
+                if (plant) {
+                  addProduct(
+                    plant.id,
+                    cantidadProd,
+                    plant.nombre_comun,
+                    plant.img_url,
+                    plant.precio,
+                    plant.type,
+                  );
+                }
               }}>
               Añadir al carrito
             </Button>

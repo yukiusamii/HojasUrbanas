@@ -198,6 +198,7 @@ export const HomeScreen = () => {
             img_url={item.img_url}
             precio={item.precio}
             rating={item.rating}
+            type={item.type}
           />
         )}
       />

@@ -17,6 +17,7 @@ import {DetailScreen} from '../screens/DetailScreen';
 import {ResponseScreen} from '../screens/ResponseScreen';
 import {AddPlantByPhotoScreen} from '../screens/AddPlantByPhotoScreen';
 import {DetailProdScreen} from '../screens/DetailProdScreen';
+import {BuyScreen} from '../screens/BuyScreen';
 export type RootStackParamList = {
   Home: undefined;
   Plants: undefined;
@@ -35,6 +36,7 @@ export type RootStackParamList = {
   DetailProd: {id: string; type: string | null | undefined};
   Response: {uri: string};
   AddPlantPhoto: {uri: string};
+  Buy: undefined;
 };
 
 // Crear el Stack Navigator global
@@ -309,6 +311,14 @@ export const MainStackNavigator = () => (
       options={{
         headerShown: false,
         title: '',
+      }}
+    />
+    <MainStack.Screen
+      name="Buy"
+      component={BuyScreen}
+      options={{
+        // headerShown: false,
+        title: 'Tamitar pedido',
       }}
     />
 

@@ -21,19 +21,6 @@ export const CartScreen = () => {
   const productos = useCartStore(state => state.productos);
   const subtotal = useCartStore(state => state.subtotal);
 
-  // firestore()
-  // .collection('usuarios')
-  // .doc(uid)
-  // .update({
-  //   name: fullName,
-  //   userName: username,
-  //   email: userEmail,
-  //   photoURL: finalPhotoURL,
-  //   biografia: bio,
-  //   direccion: dir,
-  //   firtTime: false,
-  // })
-
   useFocusEffect(
     useCallback(() => {
       // setsubtotal(getSubtotal());
@@ -59,6 +46,7 @@ export const CartScreen = () => {
           mode="outlined"
           onPress={() => {
             console.log('Tramitar pedido');
+            navigation.navigate('Buy');
           }}>
           Tramitar pedido
         </Button>
@@ -78,7 +66,14 @@ export const CartScreen = () => {
             /> */}
             <CartCard
               onPress={() => {
-                console.log('Has pulsado: ', item.nombre_comun);
+                if (!item.type) {
+                  navigation.navigate('Detail', {id: item.id, type: item.type});
+                } else {
+                  navigation.navigate('DetailProd', {
+                    id: item.id,
+                    type: item.type,
+                  });
+                }
               }}
               id={item.id}
               nombre_comun={item.nombre_comun}
