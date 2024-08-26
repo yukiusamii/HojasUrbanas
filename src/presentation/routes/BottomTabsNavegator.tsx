@@ -317,7 +317,7 @@ export const MainStackNavigator = () => (
       name="Buy"
       component={BuyScreen}
       options={{
-        // headerShown: false,
+        headerShown: false,
         title: 'Tamitar pedido',
       }}
     />

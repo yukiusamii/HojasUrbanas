@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import firestore from '@react-native-firebase/firestore';
 import {useProfileStore} from './profile-store';
+import {ToastAndroid} from 'react-native';
 
 interface myPlant {
   nombre_comun: string;
@@ -65,6 +66,7 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
 
       // Guardar misPlantas en Firebase
       savePlantsToFirebase(uid || '', updatedPlantas);
+      ToastAndroid.show('Planta añadida.', ToastAndroid.SHORT);
     } else {
       console.log(`La planta con id ${id} ya está añadida.`);
     }
@@ -75,7 +77,7 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
     set(state => {
       const updatedPlantas = state.misPlantas.filter(plant => plant.id !== id);
       savePlantsToFirebase(uid || '', updatedPlantas);
-
+      ToastAndroid.show('Planta eliminada.', ToastAndroid.SHORT);
       return {misPlantas: updatedPlantas};
     });
   },

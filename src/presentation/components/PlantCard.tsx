@@ -3,6 +3,7 @@ import FastImage from 'react-native-fast-image';
 import {IconButton, Menu} from 'react-native-paper';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import React from 'react';
+import {usePlantStore} from '../store/plant-store';
 
 interface Props {
   onPress: () => void;
@@ -24,6 +25,8 @@ export const PlantCard = ({
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const deletePlant = usePlantStore(state => state.deletePlant);
+
   return (
     <Pressable
       onPress={() => onPress()}
@@ -73,7 +76,7 @@ export const PlantCard = ({
             }>
             <Menu.Item
               onPress={() => {
-                // Lógica para la acción de eliminar
+                deletePlant(id);
               }}
               title="Eliminar"
             />
