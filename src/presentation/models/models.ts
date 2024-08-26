@@ -56,11 +56,11 @@ export interface Producto {
   nombre_comun: string;
   precio: number;
   stock: number;
-  rating?: Rating;
+  rating: Rating;
   type?: string;
 }
 
 interface Rating {
-  nota: string;
-  total: string;
+  nota: number;
+  total: number;
 }

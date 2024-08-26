@@ -77,6 +77,10 @@ export const DetailScreen = () => {
             zona_rustica: plantdata.temperatura.zona_rustica,
           },
           tierra: plantdata.tierra,
+          rating: {
+            nota: plantdata.rating?.nota,
+            total: plantdata.rating?.total,
+          },
         };
         setPlant(planta);
         setLoading(false);

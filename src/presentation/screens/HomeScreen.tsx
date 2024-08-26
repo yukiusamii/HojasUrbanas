@@ -18,6 +18,8 @@ import {useAllStore} from '../store/all-store';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {CameraAdapter} from '../adapters/camera-adapter';
+import {useCartStore} from '../store/cart-store';
+import {usePlantStore} from '../store/plant-store';
 export const HomeScreen = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +94,10 @@ export const HomeScreen = () => {
               zona_rustica: docData.temperatura.zona_rustica,
             }, // Mapa de temperatura
             tierra: docData.tierra, // Tipo de tierra
+            rating: {
+              nota: docData.rating?.nota,
+              total: docData.rating?.total,
+            },
           } as Planta;
         });
 
@@ -118,7 +124,8 @@ export const HomeScreen = () => {
           } as Producto;
         });
 
-        setData(plantasData);
+        const combinedData = [...plantasData, ...productosData];
+        setData(combinedData);
         setPlantas(plantasData);
       } catch (error) {
         console.error('Error getting documents: ', error);
@@ -177,13 +184,20 @@ export const HomeScreen = () => {
           <ProductCard
             onPress={() => {
               console.log('Has pulsado: ', item.nombre_comun);
-              navigation.navigate('Detail', {id: item.id, type: item.type});
+              if (!item.type) {
+                navigation.navigate('Detail', {id: item.id, type: item.type});
+              } else {
+                navigation.navigate('DetailProd', {
+                  id: item.id,
+                  type: item.type,
+                });
+              }
             }}
             id={item.id}
             nombre_comun={item.nombre_comun}
             img_url={item.img_url}
             precio={item.precio}
-            rating={{nota: 4.2, total: 3}}
+            rating={item.rating}
           />
         )}
       />

@@ -14,11 +14,25 @@ import FastImage from 'react-native-fast-image';
 import {CartCard} from '../components/CartCard';
 import {useCallback} from 'react';
 import React from 'react';
+import {useProfileStore} from '../store/profile-store';
 
 export const CartScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const productos = useCartStore(state => state.productos);
   const subtotal = useCartStore(state => state.subtotal);
+
+  // firestore()
+  // .collection('usuarios')
+  // .doc(uid)
+  // .update({
+  //   name: fullName,
+  //   userName: username,
+  //   email: userEmail,
+  //   photoURL: finalPhotoURL,
+  //   biografia: bio,
+  //   direccion: dir,
+  //   firtTime: false,
+  // })
 
   useFocusEffect(
     useCallback(() => {

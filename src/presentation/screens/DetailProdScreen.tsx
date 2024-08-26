@@ -3,7 +3,7 @@ import {useRoute, RouteProp, useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import React from 'react';
-import {Planta} from '../models/models';
+import {Planta, Producto} from '../models/models';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
 import {StyleSheet} from 'react-native';
@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 export const DetailProdScreen = () => {
   const params = useRoute<RouteProp<RootStackParamList, 'Detail'>>().params;
-  const [plant, setPlant] = React.useState<Planta | null>(null);
+  const [product, setProduct] = React.useState<Producto | null>(null);
   const [loading, setLoading] = useState(true);
   const [cantidadProd, setCantidadProd] = useState(1);
 
@@ -29,60 +29,35 @@ export const DetailProdScreen = () => {
     enfermedades: false,
   });
 
-  const getPlant = async (id: string) => {
+  const getProduct = async (id: string) => {
     try {
-      const plantDataSnapshot = await firestore()
+      const prodcutDataSnapshot = await firestore()
         .collection('productos')
-        .doc('plantas')
-        .collection('plantas')
+        .doc('productos')
+        .collection('productos')
         .doc(id)
         .get();
 
-      const plantdata = plantDataSnapshot.data();
-      if (plantdata) {
-        const planta: Planta = {
-          descripcion: plantdata.descripcion,
-          enfermedades: plantdata.enfermedades.map((enfermedad: any) => ({
-            cuidados: enfermedad.cuidados,
-            descripcion: enfermedad.descripcion,
-            nombre: enfermedad.nombre,
-          })),
-          etiquetas: {
-            cuidado: plantdata.etiquetas.cuidado,
-            localizacion: plantdata.etiquetas.localizacion,
-            luz: plantdata.etiquetas.luz,
-            riego: plantdata.etiquetas.riego,
-            toxicidad: plantdata.etiquetas.toxicidad,
+      const docData = prodcutDataSnapshot.data();
+      if (docData) {
+        const producto: Producto = {
+          descripcion: docData.descripcion,
+          id: docData.id,
+          img_url: docData.img_url,
+          nombre_comun: docData.nombre_comun,
+          precio: docData.precio,
+          stock: docData.stock, // Cantidad en stock
+          rating: {
+            nota: docData.rating?.nota,
+            total: docData.rating?.total,
           },
-          fertilizacion: plantdata.fertilizacion,
-          id: plantdata.id,
-          id_modelo: plantdata.id_modelo,
-          img_url: plantdata.img_url,
-          luz: {
-            adecuada: plantdata.luz.adecuada,
-            preferida: plantdata.luz.preferida,
-          },
-          nom_comun: plantdata.nom_comun,
-          nombre_cientifico: plantdata.nombre_cientifico,
-          nombre_comun: plantdata.nombre_comun,
-          precio: plantdata.precio,
-          riego: {
-            caracteristicas: plantdata.riego.caracteristicas,
-            invierno: plantdata.riego.invierno,
-            verano: plantdata.riego.verano,
-          },
-          stock: plantdata.stock,
-          temperatura: {
-            ideal: plantdata.temperatura.ideal,
-            zona_rustica: plantdata.temperatura.zona_rustica,
-          },
-          tierra: plantdata.tierra,
+          type: docData.type,
         };
-        setPlant(planta);
+        setProduct(producto);
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching plant data:', error);
+      console.error('Error fetching product data:', error);
     } finally {
       // Aseguramos que el loading se desactive incluso en caso de error
     }
@@ -90,12 +65,9 @@ export const DetailProdScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      setLoading(true); // Reestablecer el estado de carga al tener el foco
+      setLoading(true);
 
-      if (params.type) {
-      } else {
-        getPlant(params.id);
-      } // Llamada a la función cuando la pantalla tiene foco
+      getProduct(params.id);
     }, [params.id]),
   );
 
@@ -118,10 +90,10 @@ export const DetailProdScreen = () => {
     //   <Text>{plant?.nombre_comun}</Text>
     // </View>
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
-      {!plant ||
-      !plant.img_url ||
-      plant.img_url === '' ||
-      plant.img_url.startsWith('gs') ? (
+      {!product ||
+      !product.img_url ||
+      product.img_url === '' ||
+      product.img_url.startsWith('gs') ? (
         <Image
           style={styles.image}
           source={require('../../assets/img/default_plant_img_big.png')}
@@ -130,7 +102,7 @@ export const DetailProdScreen = () => {
         <FastImage
           style={styles.image}
           source={{
-            uri: plant.img_url,
+            uri: product.img_url,
             priority: FastImage.priority.normal,
           }}
           resizeMode={FastImage.resizeMode.cover}
@@ -146,41 +118,13 @@ export const DetailProdScreen = () => {
         }} // Abrir el modal de confirmación
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {!params.type ? (
-          <View style={styles.tagWrapper}>
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>{plant?.etiquetas.cuidado}</Text>
-            </View>
-
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>
-                {plant?.etiquetas.localizacion}
-              </Text>
-            </View>
-
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>{plant?.etiquetas.luz}</Text>
-            </View>
-
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>{plant?.etiquetas.riego}</Text>
-            </View>
-
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>{plant?.etiquetas.toxicidad}</Text>
-            </View>
-          </View>
-        ) : (
-          <View></View>
-        )}
-
         <View style={{gap: 16, marginTop: 16}}>
           <Text
             style={{
               ...globalStyles.headlineMedium,
               color: MyTheme.colors.black,
             }}>
-            {plant?.nombre_comun}
+            {product?.nombre_comun}
           </Text>
 
           <View style={globalStyles.rowCenterSpaceBetween}>
@@ -189,17 +133,17 @@ export const DetailProdScreen = () => {
                 ...globalStyles.headlineMedium,
                 color: MyTheme.colors.black,
               }}>
-              {plant?.precio}€
+              {product?.precio}€
             </Text>
             <View style={globalStyles.rowCenterEnd}>
               <StarRating
-                rating={4.1}
+                rating={product?.rating?.nota || 0}
                 onChange={() => {}}
                 starSize={20} // Tamaño de las estrellas
                 starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
                 maxStars={5}
               />
-              <Text> ({11})</Text>
+              <Text> ({product?.rating?.total || 0})</Text>
             </View>
           </View>
 
@@ -266,168 +210,10 @@ export const DetailProdScreen = () => {
               }>
               <View style={styles.accordionContent}>
                 <Text style={{...globalStyles.bodyMedium}}>
-                  {plant?.descripcion}
+                  {product?.descripcion}
                 </Text>
               </View>
             </List.Accordion>
-
-            {!params.type ? (
-              <>
-                {/* RIEGO */}
-                <List.Accordion
-                  title="Riego"
-                  titleStyle={globalStyles.titleLarge}
-                  expanded={isExpanded.riego}
-                  onPress={() =>
-                    setIsExpanded(prev => ({...prev, riego: !prev.riego}))
-                  }
-                  right={props =>
-                    isExpanded.riego ? (
-                      <Image source={require('../../assets/img/up.png')} />
-                    ) : (
-                      <Image source={require('../../assets/img/down.png')} />
-                    )
-                  }>
-                  <View style={styles.accordionContent}>
-                    <View
-                      style={{
-                        ...globalStyles.rowCenterStart,
-                        gap: 16,
-                      }}>
-                      <Icon
-                        name="snow-outline"
-                        color={MyTheme.colors.accent}
-                        size={24}
-                      />
-                      <Text style={globalStyles.bodyMedium}>
-                        En invierno regar cada {plant?.riego.invierno}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        ...globalStyles.rowCenterStart,
-                        gap: 16,
-                      }}>
-                      <Icon
-                        name="sunny-outline"
-                        color={MyTheme.colors.accent}
-                        size={24}
-                      />
-                      <Text style={globalStyles.bodyMedium}>
-                        En verano regar cada {plant?.riego.verano}
-                      </Text>
-                    </View>
-                  </View>
-                </List.Accordion>
-
-                {/* LUZ */}
-                <List.Accordion
-                  title="Luz"
-                  titleStyle={globalStyles.titleLarge}
-                  expanded={isExpanded.luz}
-                  onPress={() =>
-                    setIsExpanded(prev => ({...prev, luz: !prev.luz}))
-                  }
-                  right={props =>
-                    isExpanded.luz ? (
-                      <Image source={require('../../assets/img/up.png')} />
-                    ) : (
-                      <Image source={require('../../assets/img/down.png')} />
-                    )
-                  }>
-                  <View style={styles.accordionContent}>
-                    <View style={{...globalStyles.rowCenterStart}}>
-                      <Icon
-                        name="happy-outline"
-                        color={MyTheme.colors.accent}
-                        size={24}
-                      />
-                      <Text style={{...globalStyles.bodyMedium}}>
-                        Luz preferida: {plant?.luz.preferida}
-                      </Text>
-                    </View>
-                    <View style={{...globalStyles.rowCenterStart}}>
-                      <Image source={require('../../assets/img/neutral.png')} />
-                      <Text style={{...globalStyles.bodyMedium}}>
-                        Luz adecuada: {plant?.luz.adecuada}
-                      </Text>
-                    </View>
-                  </View>
-                </List.Accordion>
-
-                {/* TIERRA */}
-                <List.Accordion
-                  title="Tierra"
-                  titleStyle={globalStyles.titleLarge}
-                  expanded={isExpanded.tierra}
-                  onPress={() =>
-                    setIsExpanded(prev => ({...prev, tierra: !prev.tierra}))
-                  }
-                  right={props =>
-                    isExpanded.tierra ? (
-                      <Image source={require('../../assets/img/up.png')} />
-                    ) : (
-                      <Image source={require('../../assets/img/down.png')} />
-                    )
-                  }>
-                  <View style={styles.accordionContent}>
-                    <Text style={{...globalStyles.bodyMedium}}>
-                      {plant?.tierra}
-                    </Text>
-                  </View>
-                </List.Accordion>
-
-                {/* ENFERMEDADES */}
-                <List.Accordion
-                  title="Enfermedades"
-                  titleStyle={globalStyles.titleLarge}
-                  expanded={isExpanded.enfermedades}
-                  onPress={() =>
-                    setIsExpanded(prev => ({
-                      ...prev,
-                      enfermedades: !prev.enfermedades,
-                    }))
-                  }
-                  right={props =>
-                    isExpanded.enfermedades ? (
-                      <Image source={require('../../assets/img/up.png')} />
-                    ) : (
-                      <Image source={require('../../assets/img/down.png')} />
-                    )
-                  }>
-                  <View style={styles.accordionContent}>
-                    {plant?.enfermedades.map((enfermedad, index) => (
-                      <View
-                        key={index}
-                        style={{...globalStyles.colStartStart, gap: 8}}>
-                        <View style={{...globalStyles.colStartStart, gap: 4}}>
-                          <Text
-                            style={{
-                              ...globalStyles.titleMedium,
-                              color: MyTheme.colors.black,
-                            }}>
-                            {enfermedad.nombre}
-                          </Text>
-                          <Text style={globalStyles.bodyMedium}>
-                            {enfermedad.descripcion}
-                          </Text>
-                        </View>
-                        <View style={{...globalStyles.colStartStart, gap: 4}}>
-                          <Text style={{...globalStyles.titleSmall}}>
-                            Cuidados
-                          </Text>
-                          <Text style={globalStyles.bodyMedium}>
-                            {enfermedad.cuidados}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                </List.Accordion>
-              </>
-            ) : (
-              <View></View>
-            )}
           </List.Section>
         </View>
       </ScrollView>

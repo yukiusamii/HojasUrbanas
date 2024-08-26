@@ -16,6 +16,7 @@ import {AddPlantByNameScreen} from '../screens/AddPlantByNameScreen';
 import {DetailScreen} from '../screens/DetailScreen';
 import {ResponseScreen} from '../screens/ResponseScreen';
 import {AddPlantByPhotoScreen} from '../screens/AddPlantByPhotoScreen';
+import {DetailProdScreen} from '../screens/DetailProdScreen';
 export type RootStackParamList = {
   Home: undefined;
   Plants: undefined;
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   Name: undefined;
   AddPlantByName: undefined;
   Detail: {id: string; type: string | null | undefined};
+  DetailProd: {id: string; type: string | null | undefined};
   Response: {uri: string};
   AddPlantPhoto: {uri: string};
 };
@@ -277,6 +279,15 @@ export const MainStackNavigator = () => (
     <MainStack.Screen
       name="Detail"
       component={DetailScreen}
+      options={{
+        headerShown: false,
+        title: '',
+      }}
+    />
+
+    <MainStack.Screen
+      name="DetailProd"
+      component={DetailProdScreen}
       options={{
         headerShown: false,
         title: '',

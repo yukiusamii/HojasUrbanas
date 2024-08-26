@@ -63,13 +63,13 @@ export const ProductCard = ({
           </Text>
           <View style={globalStyles.rowCenterEnd}>
             <StarRating
-              rating={rating.nota}
+              rating={rating?.nota || 0}
               onChange={() => {}}
               starSize={20} // Tamaño de las estrellas
               starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
               maxStars={5}
             />
-            <Text> ({rating.total})</Text>
+            <Text> ({rating?.total || 0})</Text>
           </View>
         </View>
         <View style={styles.cardWrapRow}>

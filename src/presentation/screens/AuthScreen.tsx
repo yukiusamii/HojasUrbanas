@@ -20,6 +20,8 @@ GoogleSignin.configure({
 });
 import {useCallback} from 'react';
 import {useProfileStore} from '../store/profile-store';
+import {useCartStore} from '../store/cart-store';
+import {usePlantStore} from '../store/plant-store';
 
 async function onGoogleButtonPress() {
   try {
@@ -67,6 +69,8 @@ export const AuthScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const changeProfile = useProfileStore(state => state.changeProfile);
+  const setProductos = useCartStore(state => state.setProductos);
+  const setMisPlantas = usePlantStore(state => state.setMisPlantas);
   // useFocusEffect(
   //   useCallback(() => {
   //     console.log('Holaaa???');
@@ -107,6 +111,13 @@ export const AuthScreen = () => {
           userdata.biografia,
           userdata.direccion,
         );
+
+        if (userdata.misPlantas) {
+          setMisPlantas(userdata.misPlantas);
+        }
+        if (userdata.miCarrito) {
+          setProductos(userdata.miCarrito);
+        }
         navigation.navigate('MainTabs');
       }
     }

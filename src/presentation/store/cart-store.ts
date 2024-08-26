@@ -1,4 +1,6 @@
 import {create} from 'zustand';
+import firestore from '@react-native-firebase/firestore';
+import {useProfileStore} from './profile-store';
 
 interface productCart {
   cantProd: number;
@@ -20,6 +22,7 @@ export interface CartState {
   ) => void;
   modifyCant: (id: string, cantProd: number) => void;
   deleteProduct: (id: string) => void;
+  setProductos: (productos: Array<any>) => void;
 }
 const getSubtotal = (productos: Array<productCart>) => {
   const total = productos.reduce((total, producto) => {
@@ -27,6 +30,22 @@ const getSubtotal = (productos: Array<productCart>) => {
   }, 0);
 
   return total;
+};
+
+const saveCartToFirebase = async (
+  uid: string,
+  productos: Array<productCart>,
+) => {
+  try {
+    await firestore().collection('usuarios').doc(uid).set(
+      {
+        miCarrito: productos,
+      },
+      {merge: true},
+    );
+  } catch (error) {
+    console.error('Error al guardar el carrito en Firebase:', error);
+  }
 };
 
 export const useCartStore = create<CartState>()((set, get) => ({
@@ -40,6 +59,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
     img_url: string,
     precio: number,
   ) => {
+    const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
     set(state => {
       const existingProductIndex = state.productos.findIndex(
         product => product.id === id,
@@ -55,14 +75,20 @@ export const useCartStore = create<CartState>()((set, get) => ({
         updatedProductos.push({id, cantProd, nombre_comun, img_url, precio});
       }
 
+      const newSubtotal = getSubtotal(updatedProductos);
+
+      // Guardar el carrito actualizado en Firebase
+      saveCartToFirebase(uid || '', updatedProductos);
+
       return {
         productos: updatedProductos,
-        subtotal: getSubtotal(updatedProductos),
+        subtotal: newSubtotal,
       };
     });
   },
 
   modifyCant: (id: string, cantProd: number) => {
+    const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
     set(state => {
       const existingProductIndex = state.productos.findIndex(
         product => product.id === id,
@@ -71,9 +97,15 @@ export const useCartStore = create<CartState>()((set, get) => ({
       if (existingProductIndex !== -1) {
         const updatedProductos = [...state.productos];
         updatedProductos[existingProductIndex].cantProd = cantProd;
+
+        const newSubtotal = getSubtotal(updatedProductos);
+
+        // Guardar el carrito actualizado en Firebase
+        saveCartToFirebase(uid || '', updatedProductos);
+
         return {
           productos: updatedProductos,
-          subtotal: getSubtotal(updatedProductos),
+          subtotal: newSubtotal,
         };
       }
 
@@ -82,15 +114,30 @@ export const useCartStore = create<CartState>()((set, get) => ({
   },
 
   deleteProduct: (id: string) => {
+    // Usamos getState() para obtener el UID sin hooks
+    const uid = useProfileStore.getState().uid;
     set(state => {
       const updatedProductos = state.productos.filter(
         product => product.id !== id,
       );
 
+      const newSubtotal = getSubtotal(updatedProductos);
+
+      // Guardar el carrito actualizado en Firebase
+      saveCartToFirebase(uid || '', updatedProductos);
+
       return {
         productos: updatedProductos,
-        subtotal: getSubtotal(updatedProductos),
+        subtotal: newSubtotal,
       };
+    });
+  },
+
+  setProductos: (productos: Array<any>) => {
+    set(state => {
+      const newSubtotal = getSubtotal(productos);
+
+      return {productos, subtotal: newSubtotal};
     });
   },
 }));
