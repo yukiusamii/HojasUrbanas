@@ -1,10 +1,19 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, StyleSheet, Text, View} from 'react-native';
 import {useProfileStore} from '../store/profile-store';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
-import {IconButton} from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  IconButton,
+  Paragraph,
+  Portal,
+} from 'react-native-paper';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {type RootStackParamList} from '../routes/BottomTabsNavegator';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {useState} from 'react';
 export const InfoProfileScreen = () => {
   const name = useProfileStore(state => state.name);
   const userName = useProfileStore(state => state.userName);
@@ -16,6 +25,56 @@ export const InfoProfileScreen = () => {
 
   // const photoURL = null;
 
+  const handleLogout = async () => {
+    try {
+      await auth().signOut(); // Cerrar sesión con Firebase
+      navigation.navigate('Auth'); // Navegar a la pantalla de autenticación después del cierre de sesión
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
+
+  const [visible, setVisible] = useState(false); // Controla la visibilidad del modal de confirmación
+  const [loading, setLoading] = useState(false);
+  const uid = useProfileStore(state => state.uid); // Asumiendo que tienes este estado
+
+  const hideDialog = () => setVisible(false);
+
+  const confirmDeleteAccount = () => {
+    setVisible(true); // Mostrar el modal de confirmación
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      setVisible(false); // Ocultar el modal de confirmación
+
+      // Aquí puedes realizar la lógica de eliminación del usuario
+      const user = auth().currentUser;
+
+      // Borrar datos del usuario en Firestore
+      if (uid) {
+        await firestore().collection('usuarios').doc(uid).delete();
+      }
+
+      // Eliminar la cuenta del usuario
+      await user?.delete();
+
+      // Aquí puedes agregar la lógica adicional después de la eliminación, como redirigir al usuario a la pantalla de inicio
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        (error as any).code === 'auth/requires-recent-login'
+      ) {
+        console.error('Necesita reautenticarse:', error);
+      } else {
+        console.error('Error al eliminar la cuenta:', error);
+      }
+    } finally {
+      setLoading(false);
+      navigation.navigate('Auth');
+    }
+  };
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       {photoURL ? (
@@ -81,6 +140,49 @@ export const InfoProfileScreen = () => {
             {bibliografia}
           </Text>
         </View>
+
+        <Button
+          mode="outlined"
+          icon="log-out-outline"
+          onPress={() => {
+            handleLogout();
+          }}>
+          Cerrar sesión
+        </Button>
+
+        <Button
+          textColor={'red'}
+          mode="outlined"
+          icon="trash-outline"
+          onPress={confirmDeleteAccount}
+          loading={loading} // Mostrar indicador de carga mientras se procesa la eliminación
+          disabled={loading} // Deshabilitar botón mientras se elimina
+        >
+          Eliminar cuenta
+        </Button>
+
+        <Portal>
+          <Dialog visible={visible} onDismiss={hideDialog}>
+            <Dialog.Title>Confirmar eliminación</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>
+                ¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no
+                se puede deshacer.
+              </Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideDialog}>Cancelar</Button>
+              <Button
+                onPress={handleDeleteAccount}
+                textColor={MyTheme.colors.accent}
+                loading={loading} // Mostrar indicador de carga en el botón de confirmación
+                disabled={loading} // Deshabilitar el botón mientras se elimina
+              >
+                Sí, eliminar
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     </View>
   );

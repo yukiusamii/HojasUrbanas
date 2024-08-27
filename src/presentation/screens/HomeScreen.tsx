@@ -20,32 +20,33 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {CameraAdapter} from '../adapters/camera-adapter';
 import {useCartStore} from '../store/cart-store';
 import {usePlantStore} from '../store/plant-store';
+import {Keyboard} from 'react-native';
 export const HomeScreen = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  // const getImageUrl = async (imgUrl: string) => {
-  //   if (
-  //     !imgUrl ||
-  //     (!imgUrl.startsWith('gs://') && !imgUrl.startsWith('https://'))
-  //   ) {
-  //     return null;
-  //   }
-  //   try {
-  //     console.log('???????????????????????', imgUrl);
-  //     const url = await storage().refFromURL(imgUrl).getDownloadURL();
-  //     return url;
-  //   } catch (error) {
-  //     console.error('Error al obtener la URL de la imagen:', error);
-  //     return null;
-  //   }
-  // };
   const [searchQuery, setSearchQuery] = React.useState('');
   const setPlantas = useAllStore(state => state.setPlantas);
+  const setProductos = useAllStore(state => state.setProductos);
+  const allPlantas = useAllStore(state => state.plantas);
+  const allProductos = useAllStore(state => state.productos);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    filtrarPorNombre(query); // Pasa el valor actualizado directamente a la función de filtrado
+  };
 
+  const filtrarPorNombre = (query: string) => {
+    const combinedData = [...allPlantas, ...allProductos];
+    if (query.length === 0) {
+      setData(combinedData);
+    } else {
+      const filtered = combinedData.filter(product =>
+        product.nombre_comun.toLowerCase().includes(query.toLowerCase()),
+      );
+      setData(filtered);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -127,6 +128,7 @@ export const HomeScreen = () => {
         const combinedData = [...plantasData, ...productosData];
         setData(combinedData);
         setPlantas(plantasData);
+        setProductos(productosData);
       } catch (error) {
         console.error('Error getting documents: ', error);
       } finally {
@@ -170,7 +172,9 @@ export const HomeScreen = () => {
             right={() => (
               <IconButton
                 icon="search"
-                onPress={() => console.log('Search pressed')}
+                onPress={() => {
+                  Keyboard.dismiss();
+                }}
                 size={24}
               />
             )}

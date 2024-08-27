@@ -20,7 +20,12 @@ import {useProfileStore} from '../store/profile-store';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
 import {CameraAdapter} from '../adapters/camera-adapter';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {type RootStackParamList} from '../routes/BottomTabsNavegator';
@@ -36,7 +41,8 @@ export const EditProfileScreen = () => {
     direccion,
     changeProfile,
   } = useProfileStore();
-
+  const params =
+    useRoute<RouteProp<RootStackParamList, 'EditProfile'>>().params;
   const [username, setUsername] = React.useState(userName || '');
   const [fullName, setFullName] = React.useState(name || '');
   const [userEmail, setUserEmail] = React.useState(email || '');
@@ -138,7 +144,7 @@ export const EditProfileScreen = () => {
           'Perfil actualizado exitosamente',
           ToastAndroid.SHORT,
         );
-        navigation.navigate('InfoProfile');
+        navigation.navigate('MainTabs');
       })
       .catch(error => {
         console.error('Error al guardar los datos:', error);
@@ -189,13 +195,18 @@ export const EditProfileScreen = () => {
         onPress={cambiarFoto}
         disabled={isUploading} // Deshabilitar el botón mientras sube la imagen
       />
-      <IconButton
-        style={styles.back}
-        icon="arrow-back"
-        size={35}
-        iconColor={MyTheme.colors.accent}
-        onPress={handleBackPress} // Abrir el modal de confirmación
-      />
+      {params.firstTime ? (
+        <View></View>
+      ) : (
+        <IconButton
+          style={styles.back}
+          icon="arrow-back"
+          size={35}
+          iconColor={MyTheme.colors.accent}
+          onPress={handleBackPress} // Abrir el modal de confirmación
+        />
+      )}
+
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.container}>
           <TextInput

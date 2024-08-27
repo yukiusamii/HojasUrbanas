@@ -155,7 +155,7 @@ export const BuyScreen = () => {
                 ...globalStyles.labelLarge,
                 color: MyTheme.colors.primary,
               }}>
-              {subtotal}€
+              {subtotal.toFixed(2)}€
             </Text>
           </View>
         </View>
@@ -194,7 +194,7 @@ export const BuyScreen = () => {
               ...globalStyles.titleLarge,
               color: MyTheme.colors.primary,
             }}>
-            {subtotal + 3.99}€
+            {(subtotal + 3.99).toFixed(2)}€
           </Text>
         </View>
         <Button

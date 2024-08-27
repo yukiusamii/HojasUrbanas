@@ -1,4 +1,4 @@
-import {FlatList, View} from 'react-native';
+import {FlatList, Keyboard, View} from 'react-native';
 import {IconButton, Searchbar} from 'react-native-paper';
 import {MyTheme} from '../theme/global.styles';
 import React from 'react';
@@ -13,9 +13,24 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 export const AddPlantByNameScreen = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const plantas = useAllStore(state => state.plantas);
-  const onChangeSearch = (query: string) => setSearchQuery(query);
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [data, setData] = React.useState(plantas);
 
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    filtrarPorNombre(query); // Pasa el valor actualizado directamente a la función de filtrado
+  };
+
+  const filtrarPorNombre = (query: string) => {
+    if (query.length === 0) {
+      setData(plantas);
+    } else {
+      const filtered = plantas.filter(product =>
+        product.nombre_comun.toLowerCase().includes(query.toLowerCase()),
+      );
+      setData(filtered);
+    }
+  };
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       <View style={{padding: 10}}>
@@ -35,7 +50,9 @@ export const AddPlantByNameScreen = () => {
             right={() => (
               <IconButton
                 icon="search"
-                onPress={() => console.log('Search pressed')}
+                onPress={() => {
+                  Keyboard.dismiss();
+                }}
                 size={24}
               />
             )}
@@ -44,7 +61,7 @@ export const AddPlantByNameScreen = () => {
       </View>
       <FlatList
         style={styles.flatList}
-        data={plantas}
+        data={data}
         renderItem={({item}) => (
           <AddPlantCard
             onPress={() => {}}

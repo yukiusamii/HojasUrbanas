@@ -60,7 +60,14 @@ export const ProductCard = ({
       <View style={styles.cardWrap}>
         <View style={styles.cardWrapRow}>
           <Text
-            style={{...globalStyles.titleLarge, color: MyTheme.colors.black}}>
+            style={{
+              ...globalStyles.titleLarge,
+              color: MyTheme.colors.black,
+              flex: 1,
+              flexWrap: 'wrap',
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail">
             {nombre_comun}
           </Text>
           <View style={globalStyles.rowCenterEnd}>
