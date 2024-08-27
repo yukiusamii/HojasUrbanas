@@ -350,7 +350,7 @@ export const DetailScreen = () => {
                     )
                   }>
                   <View style={styles.accordionContent}>
-                    <View style={{...globalStyles.rowCenterStart}}>
+                    <View style={{...globalStyles.rowCenterStart, gap: 16}}>
                       <Icon
                         name="happy-outline"
                         color={MyTheme.colors.accent}
@@ -360,7 +360,7 @@ export const DetailScreen = () => {
                         Luz preferida: {plant?.luz.preferida}
                       </Text>
                     </View>
-                    <View style={{...globalStyles.rowCenterStart}}>
+                    <View style={{...globalStyles.rowCenterStart, gap: 16}}>
                       <Image source={require('../../assets/img/neutral.png')} />
                       <Text style={{...globalStyles.bodyMedium}}>
                         Luz adecuada: {plant?.luz.adecuada}
