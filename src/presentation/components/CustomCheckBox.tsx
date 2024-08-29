@@ -1,6 +1,7 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Switch} from 'react-native-paper';
+import {globalStyles} from '../theme/global.styles';
 
 interface Props {
   onPress: () => void;
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 18,
+    ...globalStyles.headlineMedium,
     marginBottom: 10,
   },
   switchContainer: {
@@ -46,6 +47,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   label: {
-    fontSize: 16,
+    ...globalStyles.titleMedium,
   },
 });

@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  Pressable,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import storage from '@react-native-firebase/storage';
@@ -20,6 +21,7 @@ import {
   Checkbox,
   FAB,
   IconButton,
+  Menu,
   Modal,
   Portal,
   Searchbar,
@@ -42,7 +44,16 @@ export const HomeScreen = () => {
   const setProductos = useAllStore(state => state.setProductos);
   const allPlantas = useAllStore(state => state.plantas);
   const allProductos = useAllStore(state => state.productos);
+  const [visibleOrden, setVisibleOrden] = React.useState(false);
+  const [orden, setOrden] = React.useState('Plantas primero');
 
+  const openMenuOrden = () => setVisibleOrden(true);
+  const closeMenuOrden = () => setVisibleOrden(false);
+
+  const handleOrdenhange = (value: string) => {
+    setOrden(value);
+    closeMenuOrden();
+  };
   interface CheckboxesState {
     plantas: boolean;
     fertilizante: boolean;
@@ -285,7 +296,9 @@ export const HomeScreen = () => {
           visible={visible}
           onDismiss={hideModal}
           contentContainerStyle={styles.modalContainerStyle}>
-          <Text style={{marginBottom: 10}}>Filtros</Text>
+          <Text style={{...globalStyles.headlineSmall, marginBottom: 10}}>
+            Filtros
+          </Text>
 
           {/* <Checkbox.Item
             label="Opción 1"
@@ -342,6 +355,50 @@ export const HomeScreen = () => {
             onPress={() => toggleCheckbox('maceta')}
           />
 
+          <View style={globalStyles.rowCenterSpaceBetween}>
+            <Text style={globalStyles.titleMedium}>Ordenar por</Text>
+            <View style={styles.dropdownContainer}>
+              <Menu
+                visible={visibleOrden}
+                onDismiss={closeMenuOrden}
+                contentStyle={styles.menuContent}
+                anchor={
+                  <Pressable
+                    style={styles.dropContent}
+                    onPress={() => setVisibleOrden(true)}>
+                    <Text>{orden}</Text>
+                    {/* <Image>../../assets/img/logo_hojas_urbanas_sin_fondo.png </Image>  */}
+                    <Image
+                      source={require('../../assets/img/arrow_drop_down.png')}></Image>
+                  </Pressable>
+                }>
+                <Menu.Item
+                  onPress={() => {
+                    handleOrdenhange('Nombre');
+                  }}
+                  title="Nombre"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    handleOrdenhange('Plantas primero');
+                  }}
+                  title="Plantas primero"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    handleOrdenhange('Más barato primero');
+                  }}
+                  title="Más barato primero"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    handleOrdenhange('Valoraciones');
+                  }}
+                  title="Valoraciones"
+                />
+              </Menu>
+            </View>
+          </View>
           <Button
             mode="contained"
             onPress={() => {
@@ -432,5 +489,29 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dropdown: {
+    width: 250,
+  },
+  dropContent: {
+    borderWidth: 1,
+    borderColor: MyTheme.colors.accent,
+    borderRadius: 10,
+    padding: 4,
+    paddingLeft: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 200,
+    height: 36,
+  },
+
+  menuContent: {
+    backgroundColor: '#fff', // Cambia el color del fondo del menú
+    borderRadius: 10, // Opcional: Redondea los bordes del menú
   },
 });
