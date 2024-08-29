@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   StyleSheet,
   FlatList,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import storage from '@react-native-firebase/storage';
@@ -13,7 +15,15 @@ import {ProductCard} from '../components/ProductCard';
 import {globalStyles, MyTheme} from '../theme/global.styles';
 import {useProfileStore} from '../store/profile-store';
 import {Planta, Producto} from '../models/models';
-import {FAB, IconButton, Searchbar} from 'react-native-paper';
+import {
+  Button,
+  Checkbox,
+  FAB,
+  IconButton,
+  Modal,
+  Portal,
+  Searchbar,
+} from 'react-native-paper';
 import {useAllStore} from '../store/all-store';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -21,6 +31,8 @@ import {CameraAdapter} from '../adapters/camera-adapter';
 import {useCartStore} from '../store/cart-store';
 import {usePlantStore} from '../store/plant-store';
 import {Keyboard} from 'react-native';
+import {CustomCheckBox} from '../components/CustomCheckBox';
+
 export const HomeScreen = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +42,31 @@ export const HomeScreen = () => {
   const setProductos = useAllStore(state => state.setProductos);
   const allPlantas = useAllStore(state => state.plantas);
   const allProductos = useAllStore(state => state.productos);
+
+  interface CheckboxesState {
+    plantas: boolean;
+    fertilizante: boolean;
+    pesticida: boolean;
+    fungicida: boolean;
+    tierra: boolean;
+    maceta: boolean;
+  }
+  const [visible, setVisible] = useState(false);
+  const [checkboxes, setCheckboxes] = useState<CheckboxesState>({
+    plantas: true,
+    fertilizante: true,
+    pesticida: true,
+    fungicida: true,
+    tierra: true,
+    maceta: true,
+  });
+
+  const toggleCheckbox = (key: keyof CheckboxesState) => {
+    setCheckboxes({...checkboxes, [key]: !checkboxes[key]});
+  };
+
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -43,6 +80,28 @@ export const HomeScreen = () => {
     } else {
       const filtered = combinedData.filter(product =>
         product.nombre_comun.toLowerCase().includes(query.toLowerCase()),
+      );
+      setData(filtered);
+    }
+  };
+
+  const filtrarPorTipo = (query: CheckboxesState) => {
+    const combinedData = [...allPlantas, ...allProductos];
+
+    // Si todos los checkboxes están seleccionados, mostramos todos los productos
+    const allSelected = Object.values(query).every(value => value === true);
+    if (allSelected) {
+      setData(combinedData);
+    } else {
+      // Filtramos solo los productos que coincidan con los tipos seleccionados
+      const filtered = combinedData.filter(
+        product =>
+          (product.type === null && query.plantas) || // Filtrar plantas (type es null)
+          (product.type === 'fertilizante' && query.fertilizante) ||
+          (product.type === 'pesticida' && query.pesticida) ||
+          (product.type === 'fungicida' && query.fungicida) ||
+          (product.type === 'tierra' && query.tierra) ||
+          (product.type === 'maceta' && query.maceta),
       );
       setData(filtered);
     }
@@ -161,7 +220,9 @@ export const HomeScreen = () => {
             style={{position: 'absolute', left: 0, top: 0, zIndex: 99}}
             icon="filter-outline"
             size={24}
-            onPress={() => console.log('Filter pressed')}
+            onPress={() => {
+              showModal();
+            }}
           />
           <Searchbar
             placeholder="Buscar"
@@ -218,6 +279,80 @@ export const HomeScreen = () => {
           }
         }}
       />
+
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={styles.modalContainerStyle}>
+          <Text style={{marginBottom: 10}}>Filtros</Text>
+
+          {/* <Checkbox.Item
+            label="Opción 1"
+            status={checkboxes.plantas ? 'checked' : 'unchecked'}
+            onPress={() => toggleCheckbox('plantas')}
+            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
+            style={styles.checkboxItem} // Añadido para ajustar el item
+          />
+          <Checkbox.Item
+            label="Opción 2"
+            status={checkboxes.fertilizante ? 'checked' : 'unchecked'}
+            onPress={() => toggleCheckbox('fertilizante')}
+            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
+            style={styles.checkboxItem} // Añadido para ajustar el item
+          />
+          <Checkbox.Item
+            label="Opción 3"
+            status={checkboxes.pesticida ? 'checked' : 'unchecked'}
+            onPress={() => toggleCheckbox('pesticida')}
+            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
+            style={styles.checkboxItem} // Añadido para ajustar el item
+          /> */}
+          <CustomCheckBox
+            label="Plantas"
+            checked={checkboxes.plantas}
+            onPress={() => toggleCheckbox('plantas')}
+          />
+          <CustomCheckBox
+            label="Tierras"
+            checked={checkboxes.tierra}
+            onPress={() => toggleCheckbox('tierra')}
+          />
+
+          <CustomCheckBox
+            label="Fertilizantes"
+            checked={checkboxes.fertilizante}
+            onPress={() => toggleCheckbox('fertilizante')}
+          />
+          <CustomCheckBox
+            label="Pesticidas"
+            checked={checkboxes.pesticida}
+            onPress={() => toggleCheckbox('pesticida')}
+          />
+
+          <CustomCheckBox
+            label="Fungicidas"
+            checked={checkboxes.fungicida}
+            onPress={() => toggleCheckbox('fungicida')}
+          />
+
+          <CustomCheckBox
+            label="Macetas"
+            checked={checkboxes.maceta}
+            onPress={() => toggleCheckbox('maceta')}
+          />
+
+          <Button
+            mode="contained"
+            onPress={() => {
+              hideModal();
+              filtrarPorTipo(checkboxes);
+            }}
+            style={{marginTop: 20}}>
+            Aplicar
+          </Button>
+        </Modal>
+      </Portal>
     </View>
   );
   // ***********************************************************
@@ -280,5 +415,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent', // Hace que el fondo sea transparente
     paddingLeft: 0,
     marginLeft: -8,
+  },
+  modalContainerStyle: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  checkboxItem: {
+    flex: 1,
+  },
+  checkboxLabel: {
+    fontSize: 16,
   },
 });
