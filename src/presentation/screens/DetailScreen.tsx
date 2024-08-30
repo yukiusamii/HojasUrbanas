@@ -1,4 +1,12 @@
-import {ActivityIndicator, Image, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  View,
+  ToastAndroid,
+} from 'react-native';
 import {useRoute, RouteProp, useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -85,11 +93,16 @@ export const DetailScreen = () => {
         };
         setPlant(planta);
         setLoading(false);
+      } else {
+        Alert.alert('Error', 'La planta no se encuentra en la base de datos.');
       }
     } catch (error) {
-      console.error('Error fetching plant data:', error);
+      Alert.alert(
+        'Error',
+        'No se ha podido obtener la planta de la base de datos.',
+      );
     } finally {
-      // Aseguramos que el loading se desactive incluso en caso de error
+      setLoading(false); // Aseguramos que el loading se desactive incluso en caso de error.
     }
   };
 
@@ -100,7 +113,7 @@ export const DetailScreen = () => {
       if (params.type) {
       } else {
         getPlant(params.id);
-      } // Llamada a la función cuando la pantalla tiene foco
+      }
     }, [params.id]),
   );
 
@@ -118,10 +131,6 @@ export const DetailScreen = () => {
   }
 
   return (
-    // <View>
-    //   <Text>DetailScreen</Text>
-    //   <Text>{plant?.nombre_comun}</Text>
-    // </View>
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       {!plant ||
       !plant.img_url ||
@@ -148,7 +157,7 @@ export const DetailScreen = () => {
         iconColor={MyTheme.colors.accent}
         onPress={() => {
           navigation.goBack();
-        }} // Abrir el modal de confirmación
+        }} // Asegúrate de que la navegación de regreso funcione correctamente.
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {!params.type ? (
@@ -198,13 +207,13 @@ export const DetailScreen = () => {
             </Text>
             <View style={globalStyles.rowCenterEnd}>
               <StarRating
-                rating={4.1}
+                rating={plant?.rating?.nota || 0}
                 onChange={() => {}}
                 starSize={20} // Tamaño de las estrellas
                 starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
                 maxStars={5}
               />
-              <Text> ({11})</Text>
+              <Text> ({plant?.rating?.total || 0})</Text>
             </View>
           </View>
 
@@ -219,6 +228,8 @@ export const DetailScreen = () => {
                 onPress={() => {
                   if (cantidadProd > 1) {
                     setCantidadProd(cantidadProd - 1);
+                  } else {
+                    ToastAndroid.show('Mínimo una unidad.', ToastAndroid.SHORT);
                   }
                 }}
               />
@@ -236,9 +247,7 @@ export const DetailScreen = () => {
                 size={24}
                 iconColor={MyTheme.colors.accent}
                 onPress={() => {
-                  if (cantidadProd < 5) {
-                    setCantidadProd(cantidadProd + 1);
-                  }
+                  setCantidadProd(cantidadProd + 1);
                 }}
               />
             </View>
@@ -255,6 +264,11 @@ export const DetailScreen = () => {
                     plant.img_url,
                     plant.precio,
                     plant.type,
+                  );
+                } else {
+                  Alert.alert(
+                    'Error',
+                    'No se ha podido añadir la planta al carrito.',
                   );
                 }
               }}>

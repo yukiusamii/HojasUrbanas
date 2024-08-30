@@ -1,11 +1,9 @@
-import {FlatList, Keyboard, View} from 'react-native';
-import {IconButton, Searchbar} from 'react-native-paper';
-import {MyTheme} from '../theme/global.styles';
+import {FlatList, Keyboard, Text, View} from 'react-native';
+import {Icon, IconButton, Searchbar} from 'react-native-paper';
+import {globalStyles, MyTheme} from '../theme/global.styles';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {useAllStore} from '../store/all-store';
-import {ProductCard} from '../components/ProductCard';
-import {PlantCard} from '../components/PlantCard';
 import {AddPlantCard} from '../components/AddPlantCard';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -16,6 +14,7 @@ export const AddPlantByNameScreen = () => {
   const [data, setData] = React.useState(plantas);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     filtrarPorNombre(query); // Pasa el valor actualizado directamente a la función de filtrado
@@ -31,16 +30,11 @@ export const AddPlantByNameScreen = () => {
       setData(filtered);
     }
   };
+
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       <View style={{padding: 10}}>
         <View style={styles.searchContainer}>
-          {/* <IconButton
-            style={{position: 'absolute', left: 0, top: 0, zIndex: 99}}
-            icon="filter-outline"
-            size={24}
-            onPress={() => console.log('Filter pressed')}
-          /> */}
           <Searchbar
             placeholder="Buscar"
             onChangeText={onChangeSearch}
@@ -59,21 +53,34 @@ export const AddPlantByNameScreen = () => {
           />
         </View>
       </View>
-      <FlatList
-        style={styles.flatList}
-        data={data}
-        renderItem={({item}) => (
-          <AddPlantCard
-            onPress={() => {}}
-            id={item.id}
-            nombre_comun={item.nombre_comun}
-            img_url={item.img_url}
-            fertilizacion={item.fertilizacion}
-            riego={item.riego.verano}
-            navigation={navigation}
-          />
-        )}
-      />
+      {!data || data.length === 0 ? (
+        <View style={{...globalStyles.centerContainer, gap: 16}}>
+          <Text
+            style={{
+              ...globalStyles.titleLarge,
+              color: MyTheme.colors.accent,
+              textAlign: 'center',
+            }}>
+            No hay resultados con la siguiente búsqueda
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          style={styles.flatList}
+          data={data}
+          renderItem={({item}) => (
+            <AddPlantCard
+              onPress={() => {}}
+              id={item.id}
+              nombre_comun={item.nombre_comun}
+              img_url={item.img_url}
+              fertilizacion={item.fertilizacion}
+              riego={item.riego.verano}
+              navigation={navigation}
+            />
+          )}
+        />
+      )}
     </View>
   );
 };

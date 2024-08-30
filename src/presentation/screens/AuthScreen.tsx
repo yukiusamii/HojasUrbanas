@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Alert, Image, Pressable, StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {
   NavigationProp,
@@ -29,8 +29,10 @@ async function onGoogleButtonPress() {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     return auth().signInWithCredential(googleCredential);
   } catch (error) {
-    console.error('Error al iniciar sesión con Google: ', error);
-    throw error; // Propaga el error para que pueda manejarse más adelante
+    Alert.alert(
+      'Error',
+      'Se ha producido un error al iniciar sesión con Google.',
+    );
   }
 }
 
@@ -58,79 +60,90 @@ const saveUserToFirestore = async () => {
         console.log('El usuario ya existe en Firestore.');
       }
     } catch (error) {
-      console.error('Error al guardar el usuario en Firestore: ', error);
-      throw error;
+      Alert.alert(
+        'Error',
+        'No se ha podido registrar el usuario en la base de datos.',
+      );
     }
+  } else {
+    Alert.alert('Error', 'Usuario no autenticado.');
   }
 
   return user;
 };
+
 export const AuthScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const changeProfile = useProfileStore(state => state.changeProfile);
   const setProductos = useCartStore(state => state.setProductos);
   const setMisPlantas = usePlantStore(state => state.setMisPlantas);
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     console.log('Holaaa???');
-  //     const user = auth().currentUser;
-  //     if (user) {
-  //       fillProfile(user);
-  //     }
-  //     return () => {};
-  //   }, []),
-  // );
 
   const fillProfile = async (user: any) => {
-    const userdataSnapshot = await firestore()
-      .collection('usuarios')
-      .doc(user?.uid)
-      .get();
+    try {
+      const userdataSnapshot = await firestore()
+        .collection('usuarios')
+        .doc(user?.uid)
+        .get();
 
-    const userdata = userdataSnapshot.data();
-    if (userdata) {
-      if (userdata.firtTime) {
-        changeProfile(
-          userdata.uid,
-          userdata.name,
-          '',
-          userdata.email,
-          userdata.photoURL || undefined,
-          '',
-          '',
-        );
-        navigation.navigate('EditProfile', {firstTime: true});
+      const userdata = userdataSnapshot.data();
+      if (userdata) {
+        if (userdata.firtTime) {
+          changeProfile(
+            userdata.uid,
+            userdata.name,
+            '',
+            userdata.email,
+            userdata.photoURL || undefined,
+            '',
+            '',
+          );
+          navigation.navigate('EditProfile', {firstTime: true});
+        } else {
+          changeProfile(
+            userdata.uid,
+            userdata.name,
+            userdata.userName,
+            userdata.email,
+            userdata.photoURL || undefined,
+            userdata.biografia,
+            userdata.direccion,
+          );
+
+          if (userdata.misPlantas) {
+            setMisPlantas(userdata.misPlantas);
+          }
+          if (userdata.miCarrito) {
+            setProductos(userdata.miCarrito);
+          }
+          navigation.navigate('MainTabs');
+        }
       } else {
-        changeProfile(
-          userdata.uid,
-          userdata.name,
-          userdata.userName,
-          userdata.email,
-          userdata.photoURL || undefined,
-          userdata.biografia,
-          userdata.direccion,
+        Alert.alert(
+          'Error',
+          'No se han encontrado el usuario en la base de datos.',
         );
-
-        if (userdata.misPlantas) {
-          setMisPlantas(userdata.misPlantas);
-        }
-        if (userdata.miCarrito) {
-          setProductos(userdata.miCarrito);
-        }
-        navigation.navigate('MainTabs');
       }
+    } catch (error) {
+      Alert.alert('Error', 'No se han podido obtener los datos del usuario.');
     }
   };
+
   const handleGoogleLogin = async () => {
     try {
       await onGoogleButtonPress();
       console.log('Inició sesión con Google!');
       const user = await saveUserToFirestore();
-      fillProfile(user);
+      if (user) {
+        fillProfile(user);
+      } else {
+        Alert.alert('Error', 'Usuario no guardado en la base de datos.');
+      }
     } catch (error) {
-      console.error('Error durante el flujo de inicio de sesión:', error);
-      // Manejo de errores para la UI
+      Alert.alert(
+        'Error',
+        'Se ha producido un error durante el flujo de inicio de sesión.',
+      );
     }
   };
 

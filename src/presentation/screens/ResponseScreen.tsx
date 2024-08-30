@@ -1,4 +1,12 @@
-import {Text, View, StyleSheet, Image, ActivityIndicator} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  ToastAndroid,
+  Alert,
+} from 'react-native';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import {
   NavigationProp,
@@ -22,19 +30,24 @@ export const ResponseScreen = () => {
   const [confidence, setConfidence] = useState(0);
   const [name, setName] = useState('');
   const plantas = useAllStore(state => state.plantas);
+
   const goToInfo = async () => {
-    const plantaEncontrada = plantas.find(
-      planta => planta.nombre_comun === name,
-    );
+    try {
+      const plantaEncontrada = plantas.find(
+        planta => planta.nombre_comun === name,
+      );
 
-    if (plantaEncontrada) {
-      const idPlanta = plantaEncontrada.id;
-      const typePlanta = plantaEncontrada.type;
+      if (plantaEncontrada) {
+        const idPlanta = plantaEncontrada.id;
+        const typePlanta = plantaEncontrada.type;
 
-      console.log('ID de la planta encontrada:', idPlanta);
-      navigation.navigate('Detail', {id: idPlanta, type: typePlanta});
-    } else {
-      console.log('Planta no encontrada');
+        console.log('ID de la planta encontrada:', idPlanta);
+        navigation.navigate('Detail', {id: idPlanta, type: typePlanta});
+      } else {
+        Alert.alert('Error', 'Planta no encontrada.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Error al navegar a la información de la planta.');
     }
   };
 
@@ -64,11 +77,18 @@ export const ResponseScreen = () => {
     } catch (error) {
       setLoading(false);
       setEstadoRespuesta('failed');
-      console.log(error);
+
+      Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
     }
   };
+
   useEffect(() => {
-    getResponse(params.uri);
+    try {
+      getResponse(params.uri);
+    } catch (error) {
+      console.error('Error en useEffect al obtener la respuesta:', error);
+      Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
+    }
   }, []);
 
   return (
@@ -95,11 +115,9 @@ export const ResponseScreen = () => {
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
-          {
-            <View style={styles.container}>
-              <Image source={{uri: params.uri}} style={styles.image} />
-            </View>
-          }
+          <View style={styles.container}>
+            <Image source={{uri: params.uri}} style={styles.image} />
+          </View>
 
           <View style={styles.cardWrap}>
             <Text
@@ -126,7 +144,14 @@ export const ResponseScreen = () => {
                   mode="contained"
                   icon="information-circle-outline"
                   onPress={async () => {
-                    goToInfo();
+                    try {
+                      await goToInfo();
+                    } catch (error) {
+                      console.error(
+                        'Error al intentar ver más información:',
+                        error,
+                      );
+                    }
                   }}>
                   Ver más información
                 </Button>
@@ -136,9 +161,21 @@ export const ResponseScreen = () => {
                   mode="outlined"
                   icon="camera-outline"
                   onPress={async () => {
-                    const uriPhoto = await CameraAdapter.takePicture();
-                    if (uriPhoto && uriPhoto.length > 0) {
-                      getResponse(uriPhoto[0]);
+                    try {
+                      const uriPhoto = await CameraAdapter.takePicture();
+                      if (uriPhoto && uriPhoto.length > 0) {
+                        getResponse(uriPhoto[0]);
+                      } else {
+                        ToastAndroid.show(
+                          'No se ha tomado ninguna foto.',
+                          ToastAndroid.SHORT,
+                        );
+                      }
+                    } catch (error) {
+                      Alert.alert(
+                        'Error',
+                        'Se ha producido un error al tomar la foto.',
+                      );
                     }
                   }}>
                   Capturar otra planta
@@ -174,9 +211,18 @@ export const ResponseScreen = () => {
             icon="camera-outline"
             style={{marginBottom: 16, marginTop: 24}}
             onPress={async () => {
-              const uriPhoto = await CameraAdapter.takePicture();
-              if (uriPhoto && uriPhoto.length > 0) {
-                getResponse(uriPhoto[0]);
+              try {
+                const uriPhoto = await CameraAdapter.takePicture();
+                if (uriPhoto && uriPhoto.length > 0) {
+                  getResponse(uriPhoto[0]);
+                } else {
+                  console.log('Captura de foto cancelada o fallida.'); // ****ERROR**** Manejar el caso en que la captura sea cancelada o falle.
+                }
+              } catch (error) {
+                console.error(
+                  'Error al capturar y analizar una nueva planta:',
+                  error,
+                ); // ****ERROR**** Manejar errores al capturar y analizar una nueva planta.
               }
             }}>
             Capturar planta
@@ -201,17 +247,6 @@ const styles = StyleSheet.create({
     objectFit: 'cover',
     position: 'absolute',
   },
-  mascara: {
-    position: 'absolute',
-    width: '80%',
-    height: '90%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 10,
-  },
   cardWrap: {
     display: 'flex',
     flexDirection: 'column',
@@ -222,48 +257,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
   },
-  confidence: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    width: '90%',
-    borderRadius: 10,
-  },
-
-  confidenceText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#fff',
-    textAlign: 'center',
-  },
-
-  confidenceTextSmall: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#fff',
-    textAlign: 'center',
-  },
-
   cardWrapRow: {
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 12,
-  },
-  subtitle1: {
-    fontSize: 18,
-    fontWeight: '300',
-    color: '#262626',
-    textAlign: 'center',
-  },
-
-  subtitle2: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#262626',
-    textAlign: 'center',
   },
   back: {
     backgroundColor: 'rgba(212, 245, 212, 0.6)',
@@ -272,7 +270,6 @@ const styles = StyleSheet.create({
     top: 4,
     zIndex: 9999,
   },
-
   btnWrap: {
     ...globalStyles.colCenterCenter,
     gap: 16,

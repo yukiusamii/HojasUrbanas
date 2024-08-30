@@ -1,4 +1,11 @@
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import {Button, FAB, IconButton, Modal, Portal, Text} from 'react-native-paper';
 import React, {useState} from 'react';
 import {PlantCard} from '../components/PlantCard';
@@ -7,6 +14,7 @@ import {globalStyles, MyTheme} from '../theme/global.styles';
 import {RootStackParamList} from '../routes/BottomTabsNavegator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {CameraAdapter} from '../adapters/camera-adapter';
+
 export const PlantsScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const misPlantas = usePlantStore(state => state.misPlantas);
@@ -41,7 +49,7 @@ export const PlantsScreen = () => {
               <View>
                 <PlantCard
                   onPress={() => {
-                    console.log('Has pulsado: ');
+                    // console.log('Has pulsado: ', item.nombre_comun);
                   }}
                   id={item.id}
                   nombre_comun={item.nombre_comun}
@@ -81,9 +89,21 @@ export const PlantsScreen = () => {
               mode="contained"
               onPress={async () => {
                 hideModal();
-                const uriPhoto = await CameraAdapter.takePicture();
-                if (uriPhoto && uriPhoto.length > 0) {
-                  navigation.navigate('AddPlantPhoto', {uri: uriPhoto[0]});
+                try {
+                  const uriPhoto = await CameraAdapter.takePicture();
+                  if (uriPhoto && uriPhoto.length > 0) {
+                    navigation.navigate('AddPlantPhoto', {uri: uriPhoto[0]});
+                  } else {
+                    ToastAndroid.show(
+                      'No se ha tomado ninguna foto.',
+                      ToastAndroid.SHORT,
+                    );
+                  }
+                } catch (error) {
+                  Alert.alert(
+                    'Error',
+                    'Se ha producido un error al tomar la foto.',
+                  );
                 }
               }}
               style={{marginBottom: 16, marginTop: 45}}>
@@ -106,6 +126,7 @@ export const PlantsScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   modalContainerStyle: {
     backgroundColor: 'white',

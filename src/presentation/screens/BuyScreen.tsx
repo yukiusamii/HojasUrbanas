@@ -25,6 +25,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useCartStore} from '../store/cart-store';
 import FastImage from 'react-native-fast-image';
+
 export const BuyScreen = () => {
   const {uid, name, email, direccion} = useProfileStore();
 
@@ -40,6 +41,7 @@ export const BuyScreen = () => {
 
   const subtotal = useCartStore(state => state.subtotal);
   const [value, setValue] = React.useState('selected');
+
   React.useEffect(() => {
     const backAction = () => {
       setVisible(true);
@@ -93,18 +95,16 @@ export const BuyScreen = () => {
         },
       );
 
-      // if (response.ok) {
-      //   Alert.alert('Éxito', '¡Email enviado con éxito!');
-      // } else {
-      //   const errorText = await response.text();
-      //   Alert.alert('Error', 'Error al enviar el email: ');
-      // }
-      setVisibleMail(true);
+      if (response.ok) {
+        setVisibleMail(true);
+      } else {
+        setVisibleMail(true);
+      }
     } catch (error) {
-      // Alert.alert('Error', 'Hubo un problema al enviar el email');
       setVisibleMail(true);
     }
   };
+
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       <IconButton
@@ -245,16 +245,21 @@ export const BuyScreen = () => {
         <Button
           mode="contained"
           onPress={() => {
-            sendEmail(
-              email || '',
-              'Pedido Hojas Urbanas',
-              JSON.stringify(productos),
-            );
+            if (userEmail && dir && fullName) {
+              sendEmail(
+                email || '',
+                'Pedido Hojas Urbanas',
+                JSON.stringify(productos),
+              );
+            } else {
+              Alert.alert(
+                'Datos incompletos',
+                'Por favor, complete todos los campos antes de tramitar el pedido.',
+              );
+            }
           }}
-          style={styles.button}
-          // disabled={isUploading} // Deshabilitar el botón mientras sube la imagen
-        >
-          Tamitar pedido
+          style={styles.button}>
+          Trámite pedido
         </Button>
       </ScrollView>
 

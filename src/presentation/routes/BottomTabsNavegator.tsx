@@ -10,14 +10,13 @@ import {MyTheme, globalStyles} from '../theme/global.styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {InfoProfileScreen} from '../screens/InfoProfileScreen';
 import {EditProfileScreen} from '../screens/EditProfileScreen';
-import {MyPlantsScreen} from '../screens/MyPlantsScreen';
 import {NameScreen} from '../screens/NameScreen';
 import {AddPlantByNameScreen} from '../screens/AddPlantByNameScreen';
 import {DetailScreen} from '../screens/DetailScreen';
-import {ResponseScreen} from '../screens/ResponseScreen';
 import {AddPlantByPhotoScreen} from '../screens/AddPlantByPhotoScreen';
 import {DetailProdScreen} from '../screens/DetailProdScreen';
 import {BuyScreen} from '../screens/BuyScreen';
+import {ResponseScreen} from '../screens/ResponseScreen';
 export type RootStackParamList = {
   Home: undefined;
   Plants: undefined;
@@ -89,13 +88,6 @@ const PlantsStackScreen = () => (
     <MainStack.Screen
       name="Plants"
       component={PlantsScreen}
-      options={{
-        title: 'Mis Plantas',
-      }}
-    />
-    <MainStack.Screen
-      name="MyPlants"
-      component={MyPlantsScreen}
       options={{
         title: 'Mis Plantas',
       }}

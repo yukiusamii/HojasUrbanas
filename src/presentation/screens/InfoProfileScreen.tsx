@@ -1,4 +1,4 @@
-import {Alert, Image, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, StyleSheet, Text, ToastAndroid, View} from 'react-native';
 import {useProfileStore} from '../store/profile-store';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
@@ -14,6 +14,8 @@ import {type RootStackParamList} from '../routes/BottomTabsNavegator';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useState} from 'react';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
 export const InfoProfileScreen = () => {
   const name = useProfileStore(state => state.name);
   const userName = useProfileStore(state => state.userName);
@@ -23,14 +25,45 @@ export const InfoProfileScreen = () => {
   const direccion = useProfileStore(state => state.direccion);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // const photoURL = null;
-
   const handleLogout = async () => {
     try {
       await auth().signOut(); // Cerrar sesión con Firebase
       navigation.navigate('Auth'); // Navegar a la pantalla de autenticación después del cierre de sesión
+      ToastAndroid.show('Sesión cerrada.', ToastAndroid.SHORT);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+    }
+  };
+
+  const reauthenticateUser = async () => {
+    const user = auth().currentUser;
+    if (user) {
+      const providerId = user.providerData[0].providerId;
+
+      if (providerId === 'google.com') {
+        // Reautenticación con Google
+        const {idToken} = await GoogleSignin.signIn();
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+        return user.reauthenticateWithCredential(googleCredential);
+      } else if (providerId === 'password') {
+        // Reautenticación con email y contraseña
+        // Aquí debes pedir al usuario que introduzca su contraseña de nuevo
+        Alert.alert(
+          'Reautenticación requerida',
+          'Por favor, inicia sesión nuevamente para continuar.',
+          [
+            {
+              text: 'Aceptar',
+              onPress: () => {
+                auth().signOut();
+                navigation.navigate('Auth');
+              },
+            },
+          ],
+        );
+        throw new Error('Reautenticación requerida');
+      }
+      // Agregar otros proveedores de autenticación si es necesario
     }
   };
 
@@ -49,15 +82,20 @@ export const InfoProfileScreen = () => {
       setLoading(true);
       setVisible(false); // Ocultar el modal de confirmación
 
-      // Aquí puedes realizar la lógica de eliminación del usuario
-      const user = auth().currentUser;
+      await reauthenticateUser();
 
       // Borrar datos del usuario en Firestore
       if (uid) {
         await firestore().collection('usuarios').doc(uid).delete();
+      } else {
+        Alert.alert(
+          'Error',
+          'Se ha producido un error al eliminar el usuario.',
+        );
       }
 
       // Eliminar la cuenta del usuario
+      const user = auth().currentUser;
       await user?.delete();
 
       // Aquí puedes agregar la lógica adicional después de la eliminación, como redirigir al usuario a la pantalla de inicio
@@ -67,14 +105,24 @@ export const InfoProfileScreen = () => {
         (error as any).code === 'auth/requires-recent-login'
       ) {
         console.error('Necesita reautenticarse:', error);
+        Alert.alert(
+          'Reautenticación requerida',
+          'Por razones de seguridad, debe volver a iniciar sesión para eliminar su cuenta.',
+        );
+        await auth().signOut();
+        navigation.navigate('Auth');
       } else {
-        console.error('Error al eliminar la cuenta:', error);
+        Alert.alert(
+          'Error',
+          'Hubo un problema al eliminar la cuenta. Por favor, inténtelo nuevamente.',
+        );
       }
     } finally {
       setLoading(false);
       navigation.navigate('Auth');
     }
   };
+
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       {photoURL ? (
@@ -114,7 +162,7 @@ export const InfoProfileScreen = () => {
             {name}
           </Text>
         </View>
-        {/* EMIAL */}
+        {/* EMAIL */}
         <View style={styles.infowrap}>
           <Text style={globalStyles.labelMedium}>Correo</Text>
           <Text
@@ -123,7 +171,7 @@ export const InfoProfileScreen = () => {
           </Text>
         </View>
 
-        {/* Diredccion */}
+        {/* Dirección */}
         <View style={styles.infowrap}>
           <Text style={globalStyles.labelMedium}>Dirección</Text>
           <Text

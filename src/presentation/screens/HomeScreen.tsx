@@ -9,6 +9,9 @@ import {
   Image,
   Pressable,
   ScrollView,
+  Keyboard,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import storage from '@react-native-firebase/storage';
@@ -33,9 +36,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {CameraAdapter} from '../adapters/camera-adapter';
 import {useCartStore} from '../store/cart-store';
 import {usePlantStore} from '../store/plant-store';
-import {Keyboard} from 'react-native';
 import {CustomCheckBox} from '../components/CustomCheckBox';
-import {CustomFilter} from '../components/CustomFilter';
 
 export const HomeScreen = () => {
   const [data, setData] = useState<any[]>([]);
@@ -67,6 +68,7 @@ export const HomeScreen = () => {
     setOrden(value);
     closeMenuOrden();
   };
+
   interface CheckboxesState {
     plantas: boolean;
     fertilizante: boolean;
@@ -104,6 +106,7 @@ export const HomeScreen = () => {
     const combinedData = [...allPlantas, ...allProductos];
     setData(combinedData);
   };
+
   const hideModal = () => setVisible(false);
   const showModal = () => setVisible(true);
 
@@ -125,6 +128,7 @@ export const HomeScreen = () => {
       setData(filtered);
     }
   };
+
   const filtrarRapido = (category: string) => {
     eliminarFiltro();
     setSearchQuery('');
@@ -237,6 +241,7 @@ export const HomeScreen = () => {
     // Establecer los datos filtrados y ordenados en el estado
     setData(filteredData);
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -249,6 +254,7 @@ export const HomeScreen = () => {
 
         const plantasData: Planta[] = plantasCollection.docs.map(doc => {
           const docData = doc.data();
+
           return {
             descripcion: docData.descripcion, // Descripción del bulbo florífero
             enfermedades: docData.enfermedades.map((enfermedad: any) => ({
@@ -322,7 +328,11 @@ export const HomeScreen = () => {
         setPlantas(plantasData);
         setProductos(productosData);
       } catch (error) {
-        console.error('Error getting documents: ', error);
+        // ToastAndroid.show(
+        //   'Error al obtener los datos.',
+        //   ToastAndroid.SHORT,
+        // );
+        Alert.alert('Error', 'Se ha producido un error al obtener los datos.');
       } finally {
         setLoading(false);
       }
@@ -400,40 +410,67 @@ export const HomeScreen = () => {
           ))}
         </ScrollView>
       </View>
-      <FlatList
-        style={styles.flatList}
-        data={data}
-        renderItem={({item}) => (
-          <ProductCard
-            onPress={() => {
-              console.log('Has pulsado: ', item.nombre_comun);
-              if (!item.type) {
-                navigation.navigate('Detail', {id: item.id, type: item.type});
-              } else {
-                navigation.navigate('DetailProd', {
-                  id: item.id,
-                  type: item.type,
-                });
-              }
-            }}
-            id={item.id}
-            nombre_comun={item.nombre_comun}
-            img_url={item.img_url}
-            precio={item.precio}
-            rating={item.rating}
-            type={item.type}
-          />
-        )}
-      />
+      {!data || data.length === 0 ? (
+        <View style={{...globalStyles.centerContainer, gap: 16}}>
+          <Text
+            style={{
+              ...globalStyles.titleLarge,
+              color: MyTheme.colors.accent,
+              textAlign: 'center',
+            }}>
+            No hay resultados con la siguiente búsqueda
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          style={styles.flatList}
+          data={data}
+          renderItem={({item}) => (
+            <ProductCard
+              onPress={() => {
+                console.log('Has pulsado: ', item.nombre_comun);
+                if (item.id) {
+                  if (!item.type) {
+                    navigation.navigate('Detail', {
+                      id: item.id,
+                      type: item.type,
+                    });
+                  } else {
+                    navigation.navigate('DetailProd', {
+                      id: item.id,
+                      type: item.type,
+                    });
+                  }
+                }
+              }}
+              id={item.id}
+              nombre_comun={item.nombre_comun}
+              img_url={item.img_url}
+              precio={item.precio}
+              rating={item.rating}
+              type={item.type}
+            />
+          )}
+        />
+      )}
       <FAB
         icon="camera-outline"
         color={MyTheme.colors.primary}
         style={styles.fab}
         size="medium"
         onPress={async () => {
-          const uriPhoto = await CameraAdapter.takePicture();
-          if (uriPhoto && uriPhoto.length > 0) {
-            navigation.navigate('Response', {uri: uriPhoto[0]});
+          try {
+            const uriPhoto = await CameraAdapter.takePicture();
+            if (uriPhoto && uriPhoto.length > 0) {
+              navigation.navigate('Response', {uri: uriPhoto[0]});
+            } else {
+              ToastAndroid.show(
+                'No se ha tomado ninguna foto.',
+                ToastAndroid.SHORT,
+              );
+            }
+          } catch (error) {
+            Alert.alert('Error', 'Se ha producido un error al tomar la foto.');
           }
         }}
       />

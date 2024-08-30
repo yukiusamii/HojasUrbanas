@@ -147,7 +147,6 @@ export const EditProfileScreen = () => {
         navigation.navigate('MainTabs');
       })
       .catch(error => {
-        console.error('Error al guardar los datos:', error);
         ToastAndroid.show('Error al guardar los datos', ToastAndroid.SHORT);
       });
   };

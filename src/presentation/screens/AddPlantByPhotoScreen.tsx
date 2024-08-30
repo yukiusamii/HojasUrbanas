@@ -1,4 +1,12 @@
-import {Text, View, StyleSheet, Image, ActivityIndicator} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import {
   NavigationProp,
@@ -40,7 +48,8 @@ export const AddPlantByPhotoScreen = () => {
       );
       navigation.goBack();
     } else {
-      console.log('Planta no encontrada');
+      // console.log('Planta no encontrada');
+      Alert.alert('Error', 'Planta no encontrada.');
     }
   };
 
@@ -70,11 +79,15 @@ export const AddPlantByPhotoScreen = () => {
     } catch (error) {
       setLoading(false);
       setEstadoRespuesta('failed');
-      console.log(error);
     }
   };
+
   useEffect(() => {
-    getResponse(params.uri);
+    if (params.uri) {
+      getResponse(params.uri);
+    } else {
+      console.log('No hay URI');
+    }
   }, []);
 
   return (
@@ -142,9 +155,21 @@ export const AddPlantByPhotoScreen = () => {
                   mode="outlined"
                   icon="camera-outline"
                   onPress={async () => {
-                    const uriPhoto = await CameraAdapter.takePicture();
-                    if (uriPhoto && uriPhoto.length > 0) {
-                      getResponse(uriPhoto[0]);
+                    try {
+                      const uriPhoto = await CameraAdapter.takePicture();
+                      if (uriPhoto && uriPhoto.length > 0) {
+                        getResponse(uriPhoto[0]);
+                      } else {
+                        ToastAndroid.show(
+                          'No se ha tomado ninguna foto.',
+                          ToastAndroid.SHORT,
+                        );
+                      }
+                    } catch (error) {
+                      Alert.alert(
+                        'Error',
+                        'Se ha producido un error al tomar la foto.',
+                      );
                     }
                   }}>
                   Capturar otra planta
@@ -180,9 +205,21 @@ export const AddPlantByPhotoScreen = () => {
             icon="camera-outline"
             style={{marginBottom: 16, marginTop: 24}}
             onPress={async () => {
-              const uriPhoto = await CameraAdapter.takePicture();
-              if (uriPhoto && uriPhoto.length > 0) {
-                getResponse(uriPhoto[0]);
+              try {
+                const uriPhoto = await CameraAdapter.takePicture();
+                if (uriPhoto && uriPhoto.length > 0) {
+                  getResponse(uriPhoto[0]);
+                } else {
+                  ToastAndroid.show(
+                    'No se ha tomado ninguna foto.',
+                    ToastAndroid.SHORT,
+                  );
+                }
+              } catch (error) {
+                Alert.alert(
+                  'Error',
+                  'Se ha producido un error al tomar la foto.',
+                );
               }
             }}>
             Capturar planta

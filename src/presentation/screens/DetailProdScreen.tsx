@@ -1,4 +1,12 @@
-import {ActivityIndicator, Image, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import {useRoute, RouteProp, useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -56,12 +64,20 @@ export const DetailProdScreen = () => {
           type: docData.type,
         };
         setProduct(producto);
-        setLoading(false);
+      } else {
+        Alert.alert(
+          'Error',
+          'El producto no se encuentra en la base de datos.',
+        );
       }
     } catch (error) {
       console.error('Error fetching product data:', error);
+      Alert.alert(
+        'Error',
+        'No se ha podido obtener el producto de la base de datos.',
+      );
     } finally {
-      // Aseguramos que el loading se desactive incluso en caso de error
+      setLoading(false);
     }
   };
 
@@ -87,10 +103,6 @@ export const DetailProdScreen = () => {
   }
 
   return (
-    // <View>
-    //   <Text>DetailScreen</Text>
-    //   <Text>{plant?.nombre_comun}</Text>
-    // </View>
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
       {!product ||
       !product.img_url ||
@@ -117,7 +129,7 @@ export const DetailProdScreen = () => {
         iconColor={MyTheme.colors.accent}
         onPress={() => {
           navigation.goBack();
-        }} // Abrir el modal de confirmación
+        }} // Asegura que la navegación de regreso funcione correctamente.
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={{gap: 16, marginTop: 16}}>
@@ -160,6 +172,8 @@ export const DetailProdScreen = () => {
                 onPress={() => {
                   if (cantidadProd > 1) {
                     setCantidadProd(cantidadProd - 1);
+                  } else {
+                    ToastAndroid.show('Mínimo una unidad.', ToastAndroid.SHORT);
                   }
                 }}
               />
@@ -177,9 +191,7 @@ export const DetailProdScreen = () => {
                 size={24}
                 iconColor={MyTheme.colors.accent}
                 onPress={() => {
-                  if (cantidadProd < 5) {
-                    setCantidadProd(cantidadProd + 1);
-                  }
+                  setCantidadProd(cantidadProd + 1);
                 }}
               />
             </View>
@@ -196,6 +208,11 @@ export const DetailProdScreen = () => {
                     product.img_url,
                     product.precio,
                     product.type,
+                  );
+                } else {
+                  Alert.alert(
+                    'Error',
+                    'No se ha podido añadir el producto al carrito.',
                   );
                 }
               }}>
