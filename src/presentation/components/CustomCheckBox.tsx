@@ -11,20 +11,6 @@ interface Props {
 
 export const CustomCheckBox = ({onPress, label, checked}: Props) => {
   return (
-    // <Pressable
-    //   onPress={onPress}
-    //   style={{flexDirection: 'row', alignItems: 'center', marginVertical: 5}}>
-    //   <Image
-    //     source={
-    //       checked
-    //         ? require('../../assets/img/fertilizer.png') // ícono personalizado para estado seleccionado
-    //         : require('../../assets/img/neutral.png') // ícono personalizado para estado no seleccionado
-    //     }
-    //     style={{width: 24, height: 24, marginRight: 8}}
-    //   />
-    //   <Text>{label}</Text>
-    // </Pressable>
-
     <View style={styles.switchContainer}>
       <Text style={styles.label}>{label}</Text>
       <Switch value={checked} onValueChange={onPress} />

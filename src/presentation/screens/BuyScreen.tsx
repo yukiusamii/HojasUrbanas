@@ -1,4 +1,5 @@
 import {
+  Alert,
   BackHandler,
   ScrollView,
   StyleSheet,
@@ -31,8 +32,12 @@ export const BuyScreen = () => {
   const [userEmail, setUserEmail] = React.useState(email || '');
   const [dir, setDir] = React.useState(direccion || '');
   const [visible, setVisible] = React.useState(false);
+  const [visibleMail, setVisibleMail] = React.useState(false);
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const productos = useCartStore(state => state.productos);
+  const setProductos = useCartStore(state => state.setProductos);
+
   const subtotal = useCartStore(state => state.subtotal);
   const [value, setValue] = React.useState('selected');
   React.useEffect(() => {
@@ -59,6 +64,46 @@ export const BuyScreen = () => {
     setVisible(false);
     ToastAndroid.show('Tramitación cancelada', ToastAndroid.SHORT);
     navigation.goBack();
+  };
+
+  const hideDialogMail = () => setVisibleMail(false);
+
+  const confirmExitMail = () => {
+    setVisibleMail(false);
+    setProductos([]);
+    ToastAndroid.show('Pedido completado', ToastAndroid.SHORT);
+
+    navigation.goBack();
+  };
+
+  const sendEmail = async (email: string, subject: string, message: string) => {
+    try {
+      const response = await fetch(
+        'https://major-honestly-mallard.ngrok-free.app/send_email',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            subject: subject,
+            message: message,
+          }),
+        },
+      );
+
+      // if (response.ok) {
+      //   Alert.alert('Éxito', '¡Email enviado con éxito!');
+      // } else {
+      //   const errorText = await response.text();
+      //   Alert.alert('Error', 'Error al enviar el email: ');
+      // }
+      setVisibleMail(true);
+    } catch (error) {
+      // Alert.alert('Error', 'Hubo un problema al enviar el email');
+      setVisibleMail(true);
+    }
   };
   return (
     <View style={{backgroundColor: MyTheme.colors.background, flex: 1}}>
@@ -199,7 +244,13 @@ export const BuyScreen = () => {
         </View>
         <Button
           mode="contained"
-          onPress={() => {}}
+          onPress={() => {
+            sendEmail(
+              email || '',
+              'Pedido Hojas Urbanas',
+              JSON.stringify(productos),
+            );
+          }}
           style={styles.button}
           // disabled={isUploading} // Deshabilitar el botón mientras sube la imagen
         >
@@ -221,6 +272,21 @@ export const BuyScreen = () => {
             <Button onPress={confirmExit} textColor={MyTheme.colors.accent}>
               Sí, salir
             </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog
+          visible={visibleMail}
+          onDismiss={hideDialogMail}
+          style={styles.dialog}>
+          <Dialog.Title>Confirmación</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>Se ha completado el pedido, revise su email.</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={confirmExitMail}>OK</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

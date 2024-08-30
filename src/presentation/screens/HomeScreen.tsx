@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import storage from '@react-native-firebase/storage';
@@ -34,6 +35,7 @@ import {useCartStore} from '../store/cart-store';
 import {usePlantStore} from '../store/plant-store';
 import {Keyboard} from 'react-native';
 import {CustomCheckBox} from '../components/CustomCheckBox';
+import {CustomFilter} from '../components/CustomFilter';
 
 export const HomeScreen = () => {
   const [data, setData] = useState<any[]>([]);
@@ -46,7 +48,18 @@ export const HomeScreen = () => {
   const allProductos = useAllStore(state => state.productos);
   const [visibleOrden, setVisibleOrden] = React.useState(false);
   const [orden, setOrden] = React.useState('Plantas primero');
-
+  const categories = [
+    'Todo',
+    'Fácil de cuidar',
+    'Interior',
+    'Riego escaso',
+    'Exterior',
+    'No tóxica',
+    'Pleno sol',
+    'Sol parcial',
+    'Luz indirecta',
+  ];
+  const [selectedCategory, setSelectedCategory] = useState('Todo');
   const openMenuOrden = () => setVisibleOrden(true);
   const closeMenuOrden = () => setVisibleOrden(false);
 
@@ -64,18 +77,33 @@ export const HomeScreen = () => {
   }
   const [visible, setVisible] = useState(false);
   const [checkboxes, setCheckboxes] = useState<CheckboxesState>({
-    plantas: true,
-    fertilizante: true,
-    pesticida: true,
-    fungicida: true,
-    tierra: true,
-    maceta: true,
+    plantas: false,
+    fertilizante: false,
+    pesticida: false,
+    fungicida: false,
+    tierra: false,
+    maceta: false,
   });
 
   const toggleCheckbox = (key: keyof CheckboxesState) => {
     setCheckboxes({...checkboxes, [key]: !checkboxes[key]});
   };
 
+  const eliminarFiltro = () => {
+    setCheckboxes({
+      plantas: false,
+      fertilizante: false,
+      pesticida: false,
+      fungicida: false,
+      tierra: false,
+      maceta: false,
+    });
+
+    setOrden('Plantas primero');
+
+    const combinedData = [...allPlantas, ...allProductos];
+    setData(combinedData);
+  };
   const hideModal = () => setVisible(false);
   const showModal = () => setVisible(true);
 
@@ -85,6 +113,8 @@ export const HomeScreen = () => {
   };
 
   const filtrarPorNombre = (query: string) => {
+    eliminarFiltro();
+    setSelectedCategory('Todo');
     const combinedData = [...allPlantas, ...allProductos];
     if (query.length === 0) {
       setData(combinedData);
@@ -95,17 +125,67 @@ export const HomeScreen = () => {
       setData(filtered);
     }
   };
+  const filtrarRapido = (category: string) => {
+    eliminarFiltro();
+    setSearchQuery('');
 
-  const filtrarPorTipo = (query: CheckboxesState) => {
+    const combinedData = [...allPlantas, ...allProductos];
+
+    if (category === 'Todo') {
+      setData(combinedData);
+      return;
+    }
+
+    const filterByCategory = (key: string) => {
+      return combinedData.filter(product =>
+        product.etiquetas?.[key]
+          ?.toLowerCase()
+          .includes(category.toLowerCase()),
+      );
+    };
+
+    switch (category) {
+      case 'Fácil de cuidar':
+        setData(filterByCategory('cuidado'));
+        break;
+
+      case 'Interior':
+      case 'Exterior':
+        setData(filterByCategory('localizacion'));
+        break;
+
+      case 'Riego escaso':
+        setData(filterByCategory('riego'));
+        break;
+
+      case 'No tóxica':
+        setData(filterByCategory('toxicidad'));
+        break;
+
+      case 'Pleno sol':
+      case 'Sol parcial':
+      case 'Luz indirecta':
+        setData(filterByCategory('luz'));
+        break;
+
+      default:
+        setData(combinedData); // Fallback, aunque en teoría nunca debería llegar aquí.
+        break;
+    }
+  };
+
+  const filtrosAvanzados = (query: CheckboxesState, orden: string) => {
+    setSearchQuery('');
+    setSelectedCategory('Todo');
     const combinedData = [...allPlantas, ...allProductos];
 
     // Si todos los checkboxes están seleccionados, mostramos todos los productos
-    const allSelected = Object.values(query).every(value => value === true);
-    if (allSelected) {
-      setData(combinedData);
-    } else {
+    const allSelected = Object.values(query).every(value => value === false);
+    let filteredData = combinedData;
+
+    if (!allSelected) {
       // Filtramos solo los productos que coincidan con los tipos seleccionados
-      const filtered = combinedData.filter(
+      filteredData = combinedData.filter(
         product =>
           (product.type === null && query.plantas) || // Filtrar plantas (type es null)
           (product.type === 'fertilizante' && query.fertilizante) ||
@@ -114,8 +194,48 @@ export const HomeScreen = () => {
           (product.type === 'tierra' && query.tierra) ||
           (product.type === 'maceta' && query.maceta),
       );
-      setData(filtered);
     }
+
+    // Aplicar ordenación basada en el criterio seleccionado
+    console.log('******ORDEN: ', orden);
+    switch (orden) {
+      case 'Nombre':
+        filteredData.sort((a, b) =>
+          a.nombre_comun.localeCompare(b.nombre_comun),
+        );
+        break;
+      case 'Plantas primero':
+        filteredData.sort((a, b) => {
+          if (a.type === null && b.type !== null) return -1;
+          if (a.type !== null && b.type === null) return 1;
+          return 0;
+        });
+        break;
+      case 'Más barato primero':
+        filteredData.sort((a, b) => a.precio - b.precio);
+        break;
+      case 'Valoraciones':
+        filteredData.sort((a, b) => {
+          // Asigna valores por defecto para rating.total y rating.nota si no existen
+          const aTotal = a.rating?.total ?? 0;
+          const bTotal = b.rating?.total ?? 0;
+          const aNota = a.rating?.nota ?? 0;
+          const bNota = b.rating?.nota ?? 0;
+
+          // Primero ordena por la cantidad total de valoraciones
+          if (bTotal !== aTotal) {
+            return bTotal - aTotal;
+          }
+          // Si tienen el mismo número de valoraciones, ordena por la nota de la valoración
+          return bNota - aNota;
+        });
+        break;
+      default:
+        break;
+    }
+
+    // Establecer los datos filtrados y ordenados en el estado
+    setData(filteredData);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -124,6 +244,7 @@ export const HomeScreen = () => {
           .collection('productos')
           .doc('plantas')
           .collection('plantas')
+          .orderBy('nombre_comun')
           .get();
 
         const plantasData: Planta[] = plantasCollection.docs.map(doc => {
@@ -176,6 +297,7 @@ export const HomeScreen = () => {
           .collection('productos')
           .doc('productos')
           .collection('productos')
+          .orderBy('nombre_comun')
           .get();
 
         const productosData: Producto[] = productosCollection.docs.map(doc => {
@@ -252,6 +374,31 @@ export const HomeScreen = () => {
             )}
           />
         </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContainer}>
+          {categories.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setSelectedCategory(category);
+                filtrarRapido(category);
+              }}
+              style={styles.tab}>
+              <Text
+                style={[
+                  styles.tabText,
+                  selectedCategory === category && styles.selectedTabText,
+                ]}>
+                {category}
+              </Text>
+              {selectedCategory === category && (
+                <View style={styles.underline} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
       <FlatList
         style={styles.flatList}
@@ -296,31 +443,18 @@ export const HomeScreen = () => {
           visible={visible}
           onDismiss={hideModal}
           contentContainerStyle={styles.modalContainerStyle}>
-          <Text style={{...globalStyles.headlineSmall, marginBottom: 10}}>
-            Filtros
-          </Text>
-
-          {/* <Checkbox.Item
-            label="Opción 1"
-            status={checkboxes.plantas ? 'checked' : 'unchecked'}
-            onPress={() => toggleCheckbox('plantas')}
-            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
-            style={styles.checkboxItem} // Añadido para ajustar el item
-          />
-          <Checkbox.Item
-            label="Opción 2"
-            status={checkboxes.fertilizante ? 'checked' : 'unchecked'}
-            onPress={() => toggleCheckbox('fertilizante')}
-            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
-            style={styles.checkboxItem} // Añadido para ajustar el item
-          />
-          <Checkbox.Item
-            label="Opción 3"
-            status={checkboxes.pesticida ? 'checked' : 'unchecked'}
-            onPress={() => toggleCheckbox('pesticida')}
-            labelStyle={styles.checkboxLabel} // Añadido para ajustar el label
-            style={styles.checkboxItem} // Añadido para ajustar el item
-          /> */}
+          <View
+            style={{...globalStyles.rowCenterSpaceBetween, marginBottom: 16}}>
+            <Text style={{...globalStyles.headlineSmall, marginBottom: 10}}>
+              Filtros
+            </Text>
+            <IconButton
+              icon="close"
+              size={24}
+              onPress={hideModal}
+              style={{alignSelf: 'flex-end'}}
+            />
+          </View>
           <CustomCheckBox
             label="Plantas"
             checked={checkboxes.plantas}
@@ -349,13 +483,13 @@ export const HomeScreen = () => {
             onPress={() => toggleCheckbox('fungicida')}
           />
 
-          <CustomCheckBox
+          {/* <CustomCheckBox
             label="Macetas"
             checked={checkboxes.maceta}
             onPress={() => toggleCheckbox('maceta')}
-          />
+          /> */}
 
-          <View style={globalStyles.rowCenterSpaceBetween}>
+          <View style={{...globalStyles.rowCenterSpaceBetween, marginTop: 16}}>
             <Text style={globalStyles.titleMedium}>Ordenar por</Text>
             <View style={styles.dropdownContainer}>
               <Menu
@@ -399,15 +533,27 @@ export const HomeScreen = () => {
               </Menu>
             </View>
           </View>
-          <Button
-            mode="contained"
-            onPress={() => {
-              hideModal();
-              filtrarPorTipo(checkboxes);
-            }}
-            style={{marginTop: 20}}>
-            Aplicar
-          </Button>
+          <View
+            style={{...globalStyles.rowCenterCenter, marginTop: 24, gap: 16}}>
+            <Button
+              mode="outlined"
+              onPress={() => {
+                hideModal();
+                eliminarFiltro();
+              }}
+              style={{width: 150}}>
+              Eliminar filtros
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => {
+                hideModal();
+                filtrosAvanzados(checkboxes, orden);
+              }}
+              style={{width: 150}}>
+              Aplicar
+            </Button>
+          </View>
         </Modal>
       </Portal>
     </View>
@@ -513,5 +659,29 @@ const styles = StyleSheet.create({
   menuContent: {
     backgroundColor: '#fff', // Cambia el color del fondo del menú
     borderRadius: 10, // Opcional: Redondea los bordes del menú
+  },
+
+  scrollViewContainer: {
+    alignItems: 'center',
+    paddingTop: 16,
+    paddingHorizontal: 10,
+  },
+  tab: {
+    marginRight: 20,
+    alignItems: 'center',
+  },
+  tabText: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  selectedTabText: {
+    color: MyTheme.colors.primary, // Utiliza el color principal de tu tema
+    fontWeight: 'bold',
+  },
+  underline: {
+    marginTop: 4,
+    height: 2,
+    width: '100%',
+    backgroundColor: MyTheme.colors.primary, // Utiliza el color principal de tu tema
   },
 });
