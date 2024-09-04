@@ -30,6 +30,7 @@ export const ResponseScreen = () => {
   const [confidence, setConfidence] = useState(0);
   const [name, setName] = useState('');
   const plantas = useAllStore(state => state.plantas);
+  const [img, setImg] = useState('');
 
   const goToInfo = async () => {
     try {
@@ -78,16 +79,17 @@ export const ResponseScreen = () => {
       setLoading(false);
       setEstadoRespuesta('failed');
 
-      Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
+      // Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
     }
   };
 
   useEffect(() => {
     try {
+      setImg(params.uri);
       getResponse(params.uri);
     } catch (error) {
-      console.error('Error en useEffect al obtener la respuesta:', error);
-      Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
+      // console.error('Error en useEffect al obtener la respuesta:', error);
+      // Alert.alert('Error', 'Error al obtener la respuesta de predicción.');
     }
   }, []);
 
@@ -116,7 +118,7 @@ export const ResponseScreen = () => {
             alignItems: 'center',
           }}>
           <View style={styles.container}>
-            <Image source={{uri: params.uri}} style={styles.image} />
+            <Image source={{uri: img}} style={styles.image} />
           </View>
 
           <View style={styles.cardWrap}>
@@ -124,17 +126,19 @@ export const ResponseScreen = () => {
               style={{
                 ...globalStyles.headlineSmall,
                 color: MyTheme.colors.black,
+                textAlign: 'center',
               }}>
               Es una{' '}
               <Text
                 style={{
                   ...globalStyles.headlineSmall,
                   color: MyTheme.colors.primary,
+                  textAlign: 'center',
                 }}>
                 {name}
               </Text>{' '}
             </Text>
-            <Text style={globalStyles.bodyLarge}>
+            <Text style={{...globalStyles.bodyLarge, textAlign: 'center'}}>
               con un nivel de confianza del {confidence}%
             </Text>
 
@@ -165,6 +169,7 @@ export const ResponseScreen = () => {
                       const uriPhoto = await CameraAdapter.takePicture();
                       if (uriPhoto && uriPhoto.length > 0) {
                         getResponse(uriPhoto[0]);
+                        setImg(uriPhoto[0]);
                       } else {
                         ToastAndroid.show(
                           'No se ha tomado ninguna foto.',
@@ -200,10 +205,10 @@ export const ResponseScreen = () => {
 
       {!loading && estadoRespuesta === 'failed' && (
         <View style={globalStyles.centerContainer}>
-          <Text style={globalStyles.subtitle2}>
+          <Text style={{...globalStyles.subtitle2, textAlign: 'center'}}>
             Lo lamentamos, la predicción ha fallado.
           </Text>
-          <Text style={globalStyles.subtitle2}>
+          <Text style={{...globalStyles.subtitle2, textAlign: 'center'}}>
             Por favor, inténtelo de nuevo.
           </Text>
           <Button
@@ -215,6 +220,7 @@ export const ResponseScreen = () => {
                 const uriPhoto = await CameraAdapter.takePicture();
                 if (uriPhoto && uriPhoto.length > 0) {
                   getResponse(uriPhoto[0]);
+                  setImg(uriPhoto[0]);
                 } else {
                   console.log('Captura de foto cancelada o fallida.'); // ****ERROR**** Manejar el caso en que la captura sea cancelada o falle.
                 }

@@ -1,4 +1,12 @@
-import {Alert, Image, StyleSheet, Text, ToastAndroid, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import {useProfileStore} from '../store/profile-store';
 import {MyTheme, globalStyles} from '../theme/global.styles';
 import FastImage from 'react-native-fast-image';
@@ -153,7 +161,8 @@ export const InfoProfileScreen = () => {
           }}
         />
       </View>
-      <View style={styles.infoContainer}>
+
+      <ScrollView contentContainerStyle={styles.infoContainer}>
         {/* NOMBRE COMPLETO */}
         <View style={styles.infowrap}>
           <Text style={globalStyles.labelMedium}>Nombre Completo</Text>
@@ -205,33 +214,33 @@ export const InfoProfileScreen = () => {
           onPress={confirmDeleteAccount}
           loading={loading} // Mostrar indicador de carga mientras se procesa la eliminación
           disabled={loading} // Deshabilitar botón mientras se elimina
-        >
+          style={{marginBottom: 16}}>
           Eliminar cuenta
         </Button>
+      </ScrollView>
 
-        <Portal>
-          <Dialog visible={visible} onDismiss={hideDialog}>
-            <Dialog.Title>Confirmar eliminación</Dialog.Title>
-            <Dialog.Content>
-              <Paragraph>
-                ¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no
-                se puede deshacer.
-              </Paragraph>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={hideDialog}>Cancelar</Button>
-              <Button
-                onPress={handleDeleteAccount}
-                textColor={MyTheme.colors.accent}
-                loading={loading} // Mostrar indicador de carga en el botón de confirmación
-                disabled={loading} // Deshabilitar el botón mientras se elimina
-              >
-                Sí, eliminar
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </View>
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
+          <Dialog.Title>Confirmar eliminación</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>
+              ¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se
+              puede deshacer.
+            </Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancelar</Button>
+            <Button
+              onPress={handleDeleteAccount}
+              textColor={MyTheme.colors.accent}
+              loading={loading} // Mostrar indicador de carga en el botón de confirmación
+              disabled={loading} // Deshabilitar el botón mientras se elimina
+            >
+              Sí, eliminar
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
@@ -242,11 +251,13 @@ const styles = StyleSheet.create({
     height: 300,
   },
   infoContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
+    flexGrow: 1,
+    // flex: 1,
+    // display: 'flex',
+    // flexDirection: 'column',
     gap: 16,
     padding: 16,
+    // paddingBottom: 45,
   },
   infowrap: {
     display: 'flex',
@@ -270,4 +281,5 @@ const styles = StyleSheet.create({
     left: 0,
     top: 230,
   },
+  dialog: {backgroundColor: MyTheme.colors.background},
 });

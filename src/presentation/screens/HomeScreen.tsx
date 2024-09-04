@@ -579,7 +579,7 @@ export const HomeScreen = () => {
                 eliminarFiltro();
               }}
               style={{width: 150}}>
-              Eliminar filtros
+              Limpiar
             </Button>
             <Button
               mode="contained"

@@ -49,7 +49,12 @@ export const PlantsScreen = () => {
               <View>
                 <PlantCard
                   onPress={() => {
-                    // console.log('Has pulsado: ', item.nombre_comun);
+                    if (item.id) {
+                      navigation.navigate('Detail', {
+                        id: item.id,
+                        type: null,
+                      });
+                    }
                   }}
                   id={item.id}
                   nombre_comun={item.nombre_comun}
