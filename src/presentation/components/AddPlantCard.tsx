@@ -55,7 +55,11 @@ export const AddPlantCard = ({
             style={{
               ...globalStyles.titleLarge,
               color: MyTheme.colors.black,
-            }}>
+              flex: 1,
+              flexWrap: 'wrap',
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail">
             {nombre_comun}
           </Text>
         </View>

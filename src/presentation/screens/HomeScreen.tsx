@@ -350,7 +350,9 @@ export const HomeScreen = () => {
           size="large"
         />
 
-        <Text>Cargando los productos...</Text>
+        <Text style={{color: MyTheme.colors.accent}}>
+          Cargando los productos...
+        </Text>
       </View>
     );
   }
@@ -537,7 +539,7 @@ export const HomeScreen = () => {
                   <Pressable
                     style={styles.dropContent}
                     onPress={() => setVisibleOrden(true)}>
-                    <Text>{orden}</Text>
+                    <Text style={{color: MyTheme.colors.accent}}>{orden}</Text>
                     {/* <Image>../../assets/img/logo_hojas_urbanas_sin_fondo.png </Image>  */}
                     <Image
                       source={require('../../assets/img/arrow_drop_down.png')}></Image>

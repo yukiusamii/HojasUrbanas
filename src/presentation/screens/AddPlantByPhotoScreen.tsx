@@ -32,10 +32,11 @@ export const AddPlantByPhotoScreen = () => {
   const [name, setName] = useState('');
   const plantas = useAllStore(state => state.plantas);
   const addPlant = usePlantStore(state => state.addPlant);
+  const [img, setImg] = useState('');
 
   const addToMyPlants = async () => {
-    const plantaEncontrada = plantas.find(
-      planta => planta.nombre_comun === name,
+    const plantaEncontrada = plantas.find(planta =>
+      planta.nombre_comun.toLowerCase().includes(name.toLowerCase()),
     );
 
     if (plantaEncontrada) {
@@ -48,7 +49,7 @@ export const AddPlantByPhotoScreen = () => {
       );
       navigation.goBack();
     } else {
-      // console.log('Planta no encontrada');
+      console.log('Planta no encontrada');
       Alert.alert('Error', 'Planta no encontrada.');
     }
   };
@@ -77,6 +78,7 @@ export const AddPlantByPhotoScreen = () => {
       setConfidence(response.data.precision);
       setName(response.data.nombre);
     } catch (error) {
+      console.log('********* RESPUESTA FAILED ********', error);
       setLoading(false);
       setEstadoRespuesta('failed');
     }
@@ -84,6 +86,7 @@ export const AddPlantByPhotoScreen = () => {
 
   useEffect(() => {
     if (params.uri) {
+      setImg(params.uri);
       getResponse(params.uri);
     } else {
       console.log('No hay URI');
@@ -116,7 +119,7 @@ export const AddPlantByPhotoScreen = () => {
           }}>
           {
             <View style={styles.container}>
-              <Image source={{uri: params.uri}} style={styles.image} />
+              <Image source={{uri: img}} style={styles.image} />
             </View>
           }
 
@@ -125,17 +128,19 @@ export const AddPlantByPhotoScreen = () => {
               style={{
                 ...globalStyles.headlineSmall,
                 color: MyTheme.colors.black,
+                textAlign: 'center',
               }}>
               Es una{' '}
               <Text
                 style={{
                   ...globalStyles.headlineSmall,
                   color: MyTheme.colors.primary,
+                  textAlign: 'center',
                 }}>
                 {name}
               </Text>{' '}
             </Text>
-            <Text style={globalStyles.bodyLarge}>
+            <Text style={{...globalStyles.bodyLarge, textAlign: 'center'}}>
               con un nivel de confianza del {confidence}%
             </Text>
 
@@ -159,6 +164,7 @@ export const AddPlantByPhotoScreen = () => {
                       const uriPhoto = await CameraAdapter.takePicture();
                       if (uriPhoto && uriPhoto.length > 0) {
                         getResponse(uriPhoto[0]);
+                        setImg(uriPhoto[0]);
                       } else {
                         ToastAndroid.show(
                           'No se ha tomado ninguna foto.',
@@ -188,16 +194,18 @@ export const AddPlantByPhotoScreen = () => {
             size="large"
           />
 
-          <Text>La planta está siendo analizada...</Text>
+          <Text style={{color: MyTheme.colors.accent}}>
+            La planta está siendo analizada...
+          </Text>
         </View>
       )}
 
       {!loading && estadoRespuesta === 'failed' && (
         <View style={globalStyles.centerContainer}>
-          <Text style={globalStyles.subtitle2}>
+          <Text style={{...globalStyles.subtitle2, textAlign: 'center'}}>
             Lo lamentamos, la predicción ha fallado.
           </Text>
-          <Text style={globalStyles.subtitle2}>
+          <Text style={{...globalStyles.subtitle2, textAlign: 'center'}}>
             Por favor, inténtelo de nuevo.
           </Text>
           <Button
@@ -209,6 +217,7 @@ export const AddPlantByPhotoScreen = () => {
                 const uriPhoto = await CameraAdapter.takePicture();
                 if (uriPhoto && uriPhoto.length > 0) {
                   getResponse(uriPhoto[0]);
+                  setImg(uriPhoto[0]);
                 } else {
                   ToastAndroid.show(
                     'No se ha tomado ninguna foto.',

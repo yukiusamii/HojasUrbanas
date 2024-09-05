@@ -97,7 +97,7 @@ export const DetailProdScreen = () => {
           color={MyTheme.colors.primary}
           size="large"
         />
-        <Text>Cargando detalle...</Text>
+        <Text style={{color: MyTheme.colors.accent}}>Cargando detalle...</Text>
       </View>
     );
   }
@@ -157,7 +157,10 @@ export const DetailProdScreen = () => {
                 starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
                 maxStars={5}
               />
-              <Text> ({product?.rating?.total || 0})</Text>
+              <Text style={{color: MyTheme.colors.accent}}>
+                {' '}
+                ({product?.rating?.total || 0})
+              </Text>
             </View>
           </View>
 

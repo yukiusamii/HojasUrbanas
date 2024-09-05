@@ -55,7 +55,11 @@ export const PlantCard = ({
             style={{
               ...globalStyles.titleLarge,
               color: MyTheme.colors.black,
-            }}>
+              flex: 1,
+              flexWrap: 'wrap',
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail">
             {nombre_comun}
           </Text>
           <Menu
@@ -85,12 +89,14 @@ export const PlantCard = ({
 
         <View style={styles.row}>
           <Image source={require('../../assets/img/watering-plants.png')} />
-          <Text>Regar cada {riego}</Text>
+          <Text style={{color: MyTheme.colors.accent}}>Regar cada {riego}</Text>
         </View>
 
         <View style={styles.row}>
           <Image source={require('../../assets/img/fertilizer.png')} />
-          <Text>Fertilizar cada {fertilizacion}</Text>
+          <Text style={{color: MyTheme.colors.accent}}>
+            Fertilizar cada {fertilizacion}
+          </Text>
         </View>
       </View>
     </Pressable>

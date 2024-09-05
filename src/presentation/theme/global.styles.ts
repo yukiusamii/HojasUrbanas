@@ -62,6 +62,7 @@ export const globalStyles = StyleSheet.create({
 
   /* Headline Styles */
   headlineLarge: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 32,
     fontWeight: '400',
@@ -69,6 +70,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0,
   },
   headlineMedium: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 28,
     fontWeight: '400',
@@ -76,6 +78,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0,
   },
   headlineSmall: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 24,
     fontWeight: '400',
@@ -85,6 +88,7 @@ export const globalStyles = StyleSheet.create({
 
   /* Title Styles */
   titleLarge: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 22,
     fontWeight: '400',
@@ -92,6 +96,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0,
   },
   titleMedium: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
@@ -99,6 +104,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.15,
   },
   titleSmall: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: '500',
@@ -108,6 +114,7 @@ export const globalStyles = StyleSheet.create({
 
   /* Label Styles */
   labelLarge: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: '500',
@@ -115,6 +122,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   labelMedium: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: '500',
@@ -122,6 +130,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   labelSmall: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 11,
     fontWeight: '500',
@@ -131,6 +140,7 @@ export const globalStyles = StyleSheet.create({
 
   /* Body Styles */
   bodyLarge: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '400',
@@ -138,6 +148,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.15,
   },
   bodyMedium: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: '400',
@@ -145,6 +156,7 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.25,
   },
   bodySmall: {
+    color: MyTheme.colors.accent,
     fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: '400',

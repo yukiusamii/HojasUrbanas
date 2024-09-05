@@ -29,6 +29,9 @@ export const PlantsScreen = () => {
         // <Text style={{textAlign: 'center', marginTop: 20}}>No hay plantas</Text>
         <View style={{...globalStyles.centerContainer, gap: 16}}>
           <Image source={require('../../assets/img/No_added_plants.png')} />
+          <Text style={globalStyles.titleLarge}>
+            Aún no hay plantas añadidas
+          </Text>
 
           <Button
             mode="contained"

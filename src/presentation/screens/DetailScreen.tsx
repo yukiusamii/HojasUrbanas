@@ -125,7 +125,7 @@ export const DetailScreen = () => {
           color={MyTheme.colors.primary}
           size="large"
         />
-        <Text>Cargando detalle...</Text>
+        <Text style={{color: MyTheme.colors.accent}}>Cargando detalle...</Text>
       </View>
     );
   }
@@ -213,7 +213,10 @@ export const DetailScreen = () => {
                 starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
                 maxStars={5}
               />
-              <Text> ({plant?.rating?.total || 0})</Text>
+              <Text style={{color: MyTheme.colors.accent}}>
+                {' '}
+                ({plant?.rating?.total || 0})
+              </Text>
             </View>
           </View>
 

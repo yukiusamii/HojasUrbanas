@@ -149,23 +149,55 @@ export const AuthScreen = () => {
 
   return (
     <View style={globalStyles.centerContainer}>
-      <Image source={require('../../assets/img/iniciar_sesion.png')} />
+      <Image
+        style={styles.image}
+        source={require('../../assets/img/logo_hojas_urbanas_sin_fondo.png')}
+      />
+      <Text style={{...globalStyles.titleLarge, color: MyTheme.colors.primary}}>
+        Inicio de sesión
+      </Text>
+      <Text style={{...globalStyles.titleMedium, color: MyTheme.colors.accent}}>
+        en Hojas Urbanas
+      </Text>
+
       <Pressable
         style={({pressed}) => [
           styles.googleBtn,
           pressed && styles.googleBtnPressed,
         ]}
         onPress={handleGoogleLogin}>
-        <Image source={require('../../assets/img/google_btn.png')} />
+        <Image
+          style={{height: 20, width: 20}}
+          source={require('../../assets/img/google.png')}
+        />
+        <Text
+          style={{
+            ...globalStyles.titleMedium,
+            color: MyTheme.colors.black,
+            fontWeight: '800',
+          }}>
+          Iniciar sesión con Google
+        </Text>
       </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  image: {
+    width: 62,
+    height: 90,
+  },
   googleBtn: {
     borderRadius: 43,
+    borderColor: MyTheme.colors.accent,
+    borderWidth: 1,
     shadowColor: 'rgba(30, 30, 30, 0.6)',
+    backgroundColor: MyTheme.colors.white,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    ...globalStyles.rowCenterCenter,
+    gap: 6,
     shadowOffset: {
       width: 0,
       height: 16,

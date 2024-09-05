@@ -78,7 +78,14 @@ export const CartCard = ({
             marginTop: -4,
           }}>
           <Text
-            style={{...globalStyles.titleMedium, color: MyTheme.colors.black}}>
+            style={{
+              ...globalStyles.titleMedium,
+              color: MyTheme.colors.black,
+              flex: 1,
+              flexWrap: 'wrap',
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail">
             {nombre_comun}
           </Text>
           <IconButton
@@ -100,7 +107,7 @@ export const CartCard = ({
                 <Pressable
                   style={styles.dropContent}
                   onPress={() => setVisible(true)}>
-                  <Text>{quantity}</Text>
+                  <Text style={{color: MyTheme.colors.accent}}>{quantity}</Text>
                   {/* <Image>../../assets/img/logo_hojas_urbanas_sin_fondo.png </Image>  */}
                   <Image
                     source={require('../../assets/img/arrow_drop_down.png')}></Image>

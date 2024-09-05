@@ -78,7 +78,10 @@ export const ProductCard = ({
               starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
               maxStars={5}
             />
-            <Text> ({rating?.total || 0})</Text>
+            <Text style={{color: MyTheme.colors.accent}}>
+              {' '}
+              ({rating?.total || 0})
+            </Text>
           </View>
         </View>
         <View style={styles.cardWrapRow}>

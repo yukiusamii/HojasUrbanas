@@ -199,7 +199,9 @@ export const ResponseScreen = () => {
             size="large"
           />
 
-          <Text>La planta está siendo analizada...</Text>
+          <Text style={{color: MyTheme.colors.accent}}>
+            La planta está siendo analizada...
+          </Text>
         </View>
       )}
 
