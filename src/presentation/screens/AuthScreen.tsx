@@ -62,9 +62,9 @@ const saveUserToFirestore = async () => {
           createdAt: firestore.FieldValue.serverTimestamp(),
           firtTime: true,
         });
-        console.log('Usuario guardado en Firestore!');
+        // console.log('Usuario guardado en Firestore!');
       } else {
-        console.log('El usuario ya existe en Firestore.');
+        // console.log('El usuario ya existe en Firestore.');
       }
     } catch (error) {
       Alert.alert(
@@ -140,7 +140,7 @@ export const AuthScreen = () => {
   const handleGoogleLogin = async () => {
     try {
       await onGoogleButtonPress();
-      console.log('Inició sesión con Google!');
+      // console.log('Inició sesión con Google!');
       const user = await saveUserToFirestore();
       if (user) {
         fillProfile(user);

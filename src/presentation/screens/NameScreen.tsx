@@ -23,9 +23,9 @@ export const NameScreen = () => {
       useNativeDriver: true, // Mejora el rendimiento al usar el controlador nativo
     }).start(() => {
       // Callback que se ejecuta después de la animación
-      console.log(
-        '*******************HOLA PANTALLA DE INICIO **************************',
-      );
+      // console.log(
+      //   '*******************HOLA PANTALLA DE INICIO **************************',
+      // );
       setTimeout(() => {
         navigation.reset({
           index: 0,

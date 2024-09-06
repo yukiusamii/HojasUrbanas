@@ -49,7 +49,7 @@ export const AddPlantByPhotoScreen = () => {
       );
       navigation.goBack();
     } else {
-      console.log('Planta no encontrada');
+      // console.log('Planta no encontrada');
       Alert.alert('Error', 'Planta no encontrada.');
     }
   };
@@ -89,7 +89,7 @@ export const AddPlantByPhotoScreen = () => {
       setImg(params.uri);
       getResponse(params.uri);
     } else {
-      console.log('No hay URI');
+      // console.log('No hay URI');
     }
   }, []);
 

@@ -97,7 +97,7 @@ export const ProductCard = ({
             mode="outlined"
             icon="cart-outline"
             onPress={() => {
-              console.log('Has Añadido al carrito: ', nombre_comun);
+              // console.log('Has Añadido al carrito: ', nombre_comun);
               addProduct(id, 1, nombre_comun, img_url, precio, type);
             }}>
             Añadir al carrito

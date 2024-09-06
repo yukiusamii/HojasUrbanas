@@ -10,12 +10,12 @@ export class CameraAdapter {
 
     if (response.assets && response.assets[0].uri) {
       const {uri, fileSize} = response.assets[0];
-      console.log(
-        `******************************************${
-          fileSize ? fileSize / 1024 : 0
-        }KB`,
-      );
-      console.log(`******************************************${uri}`);
+      // console.log(
+      //   `******************************************${
+      //     fileSize ? fileSize / 1024 : 0
+      //   }KB`,
+      // );
+      // console.log(`******************************************${uri}`);
       const img = response.assets[0].uri;
       return [img];
     }

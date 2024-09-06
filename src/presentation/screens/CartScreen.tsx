@@ -53,7 +53,7 @@ export const CartScreen = () => {
             <Button
               mode="outlined"
               onPress={() => {
-                console.log('Tramitar pedido');
+                // console.log('Tramitar pedido');
                 navigation.navigate('Buy');
               }}>
               Tramitar pedido

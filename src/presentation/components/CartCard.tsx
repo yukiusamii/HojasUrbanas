@@ -92,7 +92,7 @@ export const CartCard = ({
             icon="close"
             size={20}
             onPress={() => {
-              console.log('Borrar:', nombre_comun);
+              // console.log('Borrar:', nombre_comun);
               deleteProduct(id);
             }}></IconButton>
         </View>

@@ -68,7 +68,7 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
       savePlantsToFirebase(uid || '', updatedPlantas);
       ToastAndroid.show('Planta añadida.', ToastAndroid.SHORT);
     } else {
-      console.log(`La planta con id ${id} ya está añadida.`);
+      // console.log(`La planta con id ${id} ya está añadida.`);
     }
   },
 

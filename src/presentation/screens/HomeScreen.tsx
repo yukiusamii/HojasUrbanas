@@ -201,7 +201,7 @@ export const HomeScreen = () => {
     }
 
     // Aplicar ordenación basada en el criterio seleccionado
-    console.log('******ORDEN: ', orden);
+    // console.log('******ORDEN: ', orden);
     switch (orden) {
       case 'Nombre':
         filteredData.sort((a, b) =>

@@ -202,7 +202,7 @@ export const DetailProdScreen = () => {
               mode="contained"
               icon="cart-outline"
               onPress={() => {
-                console.log('Has Añadido al carrito: ', product?.nombre_comun);
+                // console.log('Has Añadido al carrito: ', product?.nombre_comun);
                 if (product) {
                   addProduct(
                     product.id,

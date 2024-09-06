@@ -58,11 +58,11 @@ export const PruebasScreen = () => {
 
         const urls: {[key: string]: string} = {};
         for (const planta of plantasData) {
-          console.log(
-            '-----------------*Precio Planta: ',
-            planta.nombre_comun,
-            planta.precio,
-          );
+          // console.log(
+          //   '-----------------*Precio Planta: ',
+          //   planta.nombre_comun,
+          //   planta.precio,
+          // );
 
           const url = await getImageUrl(planta.img_url);
           if (url) {
@@ -97,7 +97,7 @@ export const PruebasScreen = () => {
 
   return (
     <View style={{backgroundColor: MyTheme.colors.background}}>
-      <FlatList
+      {/* <FlatList
         style={styles.flatList}
         data={data}
         renderItem={({item}) => (
@@ -109,7 +109,7 @@ export const PruebasScreen = () => {
             rating={{nota: 4.2, total: 3}}
           />
         )}
-      />
+      /> */}
     </View>
   );
 };

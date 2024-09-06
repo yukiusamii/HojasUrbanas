@@ -42,7 +42,7 @@ export const ResponseScreen = () => {
         const idPlanta = plantaEncontrada.id;
         const typePlanta = plantaEncontrada.type;
 
-        console.log('ID de la planta encontrada:', idPlanta);
+        // console.log('ID de la planta encontrada:', idPlanta);
         navigation.navigate('Detail', {id: idPlanta, type: typePlanta});
       } else {
         Alert.alert('Error', 'Planta no encontrada.');
@@ -224,7 +224,7 @@ export const ResponseScreen = () => {
                   getResponse(uriPhoto[0]);
                   setImg(uriPhoto[0]);
                 } else {
-                  console.log('Captura de foto cancelada o fallida.'); // ****ERROR**** Manejar el caso en que la captura sea cancelada o falle.
+                  // console.log('Captura de foto cancelada o fallida.');
                 }
               } catch (error) {
                 console.error(

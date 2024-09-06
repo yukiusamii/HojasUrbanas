@@ -68,16 +68,16 @@ export const AddPlantCard = ({
           icon="add"
           mode="outlined"
           onPress={() => {
-            console.log('Añadir planta: ', nombre_comun);
-            //         nombre_comun: string,
-            // img_url: string,
-            // id: string,
-            // riego: string,
-            // fertilizacion: string,
-            console.log(
-              '------------------ ADD PLANT CARD --------------------',
-            );
-            console.log(nombre_comun, img_url, id, riego, fertilizacion);
+            // console.log('Añadir planta: ', nombre_comun);
+            // //         nombre_comun: string,
+            // // img_url: string,
+            // // id: string,
+            // // riego: string,
+            // // fertilizacion: string,
+            // console.log(
+            //   '------------------ ADD PLANT CARD --------------------',
+            // );
+            // console.log(nombre_comun, img_url, id, riego, fertilizacion);
             addPlant(nombre_comun, img_url, id, riego, fertilizacion);
             navigation.goBack();
           }}>
