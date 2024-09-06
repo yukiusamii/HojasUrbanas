@@ -1,7 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {Alert, Image, Pressable, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {
   NavigationProp,
@@ -74,6 +81,7 @@ const saveUserToFirestore = async () => {
 
 export const AuthScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [loading, setLoading] = useState(false);
 
   const changeProfile = useProfileStore(state => state.changeProfile);
   const setProductos = useCartStore(state => state.setProductos);
@@ -136,6 +144,7 @@ export const AuthScreen = () => {
       const user = await saveUserToFirestore();
       if (user) {
         fillProfile(user);
+        setLoading(false);
       } else {
         Alert.alert('Error', 'Usuario no guardado en la base de datos.');
       }
@@ -146,6 +155,32 @@ export const AuthScreen = () => {
       );
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(async user => {
+      if (user) {
+        setLoading(true);
+        await fillProfile(user);
+        setLoading(false);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={globalStyles.centerContainer}>
+        <ActivityIndicator
+          animating={true}
+          color={MyTheme.colors.primary}
+          size="large"
+        />
+
+        <Text style={{color: MyTheme.colors.accent}}>Iniciando sesión...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={globalStyles.centerContainer}>
@@ -165,7 +200,11 @@ export const AuthScreen = () => {
           styles.googleBtn,
           pressed && styles.googleBtnPressed,
         ]}
-        onPress={handleGoogleLogin}>
+        onPress={() => {
+          setLoading(true);
+
+          handleGoogleLogin();
+        }}>
         <Image
           style={{height: 20, width: 20}}
           source={require('../../assets/img/google.png')}
