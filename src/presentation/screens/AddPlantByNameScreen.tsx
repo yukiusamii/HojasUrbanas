@@ -17,7 +17,7 @@ export const AddPlantByNameScreen = () => {
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
-    filtrarPorNombre(query); // Pasa el valor actualizado directamente a la función de filtrado
+    filtrarPorNombre(query);
   };
 
   const filtrarPorNombre = (query: string) => {
@@ -40,7 +40,7 @@ export const AddPlantByNameScreen = () => {
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={styles.searchbar}
-            icon={() => null} // Elimina el ícono a la izquierda
+            icon={() => null}
             right={() => (
               <IconButton
                 icon="search"
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 30,
     paddingHorizontal: 10,
-    elevation: 2, // Para sombra en Android
+    elevation: 2,
   },
   searchbar: {
     flex: 1,
-    elevation: 0, // Elimina la sombra del Searchbar
-    backgroundColor: 'transparent', // Hace que el fondo sea transparente
+    elevation: 0,
+    backgroundColor: 'transparent',
     paddingLeft: 0,
     marginLeft: -34,
   },

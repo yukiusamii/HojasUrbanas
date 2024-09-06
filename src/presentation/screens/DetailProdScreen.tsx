@@ -56,7 +56,7 @@ export const DetailProdScreen = () => {
           img_url: docData.img_url,
           nombre_comun: docData.nombre_comun,
           precio: docData.precio,
-          stock: docData.stock, // Cantidad en stock
+          stock: docData.stock,
           rating: {
             nota: docData.rating?.nota,
             total: docData.rating?.total,
@@ -129,7 +129,7 @@ export const DetailProdScreen = () => {
         iconColor={MyTheme.colors.accent}
         onPress={() => {
           navigation.goBack();
-        }} // Asegura que la navegación de regreso funcione correctamente.
+        }}
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={{gap: 16, marginTop: 16}}>
@@ -153,8 +153,8 @@ export const DetailProdScreen = () => {
               <StarRating
                 rating={product?.rating?.nota || 0}
                 onChange={() => {}}
-                starSize={20} // Tamaño de las estrellas
-                starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
+                starSize={20}
+                starStyle={{marginHorizontal: 2}}
                 maxStars={5}
               />
               <Text style={{color: MyTheme.colors.accent}}>
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
 
   tagWrapper: {
     flexDirection: 'row',
-    flexWrap: 'wrap', // Esto permite que las etiquetas salten a una nueva línea
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   tagContainer: {

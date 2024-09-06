@@ -24,7 +24,7 @@ export const CartScreen = () => {
   //   useCallback(() => {
 
   //     return () => {
-  //       // Función de limpieza si es necesaria
+  //
   //     };
   //   }, []),
   // );

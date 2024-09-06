@@ -102,13 +102,13 @@ export const DetailScreen = () => {
         'No se ha podido obtener la planta de la base de datos.',
       );
     } finally {
-      setLoading(false); // Aseguramos que el loading se desactive incluso en caso de error.
+      setLoading(false);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      setLoading(true); // Reestablecer el estado de carga al tener el foco
+      setLoading(true);
 
       if (params.type) {
       } else {
@@ -157,7 +157,7 @@ export const DetailScreen = () => {
         iconColor={MyTheme.colors.accent}
         onPress={() => {
           navigation.goBack();
-        }} // Asegúrate de que la navegación de regreso funcione correctamente.
+        }}
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {!params.type ? (
@@ -209,8 +209,8 @@ export const DetailScreen = () => {
               <StarRating
                 rating={plant?.rating?.nota || 0}
                 onChange={() => {}}
-                starSize={20} // Tamaño de las estrellas
-                starStyle={{marginHorizontal: 2}} // Espacio entre estrellas
+                starSize={20}
+                starStyle={{marginHorizontal: 2}}
                 maxStars={5}
               />
               <Text style={{color: MyTheme.colors.accent}}>

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
 
   menuContent: {
-    backgroundColor: '#fff', // Cambia el color del fondo del menú
-    borderRadius: 10, // Opcional: Redondea los bordes del menú
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
 });

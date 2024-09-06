@@ -230,7 +230,7 @@ export const ResponseScreen = () => {
                 console.error(
                   'Error al capturar y analizar una nueva planta:',
                   error,
-                ); // ****ERROR**** Manejar errores al capturar y analizar una nueva planta.
+                );
               }
             }}>
             Capturar planta

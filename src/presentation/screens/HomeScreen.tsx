@@ -112,7 +112,7 @@ export const HomeScreen = () => {
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
-    filtrarPorNombre(query); // Pasa el valor actualizado directamente a la función de filtrado
+    filtrarPorNombre(query);
   };
 
   const filtrarPorNombre = (query: string) => {
@@ -173,7 +173,7 @@ export const HomeScreen = () => {
         break;
 
       default:
-        setData(combinedData); // Fallback, aunque en teoría nunca debería llegar aquí.
+        setData(combinedData);
         break;
     }
   };
@@ -256,42 +256,42 @@ export const HomeScreen = () => {
           const docData = doc.data();
 
           return {
-            descripcion: docData.descripcion, // Descripción del bulbo florífero
+            descripcion: docData.descripcion,
             enfermedades: docData.enfermedades.map((enfermedad: any) => ({
               cuidados: enfermedad.cuidados,
               descripcion: enfermedad.descripcion,
               nombre: enfermedad.nombre,
-            })), // Array de enfermedades con sus respectivos cuidados, descripción y nombre
+            })),
             etiquetas: {
               cuidado: docData.etiquetas.cuidado,
               localizacion: docData.etiquetas.localizacion,
               luz: docData.etiquetas.luz,
               riego: docData.etiquetas.riego,
               toxicidad: docData.etiquetas.toxicidad,
-            }, // Mapa de etiquetas
+            },
             fertilizacion: docData.fertilizacion,
-            id: docData.id, // ID de la planta
-            id_modelo: docData.id_modelo, // ID del modelo
-            img_url: docData.img_url, // URL de la imagen
+            id: docData.id,
+            id_modelo: docData.id_modelo,
+            img_url: docData.img_url,
             luz: {
               adecuada: docData.luz.adecuada,
               preferida: docData.luz.preferida,
-            }, // Mapa de características de la luz
-            nom_comun: docData.nom_comun, // Nombre común de la planta
-            nombre_cientifico: docData.nombre_cientifico, // Nombre científico de la planta
-            nombre_comun: docData.nombre_comun, // Nombre común
-            precio: docData.precio, // Precio de la planta
+            },
+            nom_comun: docData.nom_comun,
+            nombre_cientifico: docData.nombre_cientifico,
+            nombre_comun: docData.nombre_comun,
+            precio: docData.precio,
             riego: {
               caracteristicas: docData.riego.caracteristicas,
               invierno: docData.riego.invierno,
               verano: docData.riego.verano,
-            }, // Mapa de características de riego
-            stock: docData.stock, // Cantidad en stock
+            },
+            stock: docData.stock,
             temperatura: {
               ideal: docData.temperatura.ideal,
               zona_rustica: docData.temperatura.zona_rustica,
-            }, // Mapa de temperatura
-            tierra: docData.tierra, // Tipo de tierra
+            },
+            tierra: docData.tierra,
             rating: {
               nota: docData.rating?.nota,
               total: docData.rating?.total,
@@ -374,7 +374,7 @@ export const HomeScreen = () => {
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={styles.searchbar}
-            icon={() => null} // Elimina el ícono a la izquierda
+            icon={() => null}
             right={() => (
               <IconButton
                 icon="search"
@@ -626,9 +626,9 @@ export const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 200, // ajusta el tamaño de la imagen según tus necesidades
+    width: 200,
     height: 200,
-    resizeMode: 'contain', // puedes usar 'cover', 'stretch', etc. según tus necesidades
+    resizeMode: 'contain',
     marginBottom: 8,
   },
   flatList: {
@@ -649,12 +649,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 30,
     paddingHorizontal: 10,
-    elevation: 2, // Para sombra en Android
+    elevation: 2,
   },
   searchbar: {
     flex: 1,
-    elevation: 0, // Elimina la sombra del Searchbar
-    backgroundColor: 'transparent', // Hace que el fondo sea transparente
+    elevation: 0,
+    backgroundColor: 'transparent',
     paddingLeft: 0,
     marginLeft: -8,
   },
@@ -696,8 +696,8 @@ const styles = StyleSheet.create({
   },
 
   menuContent: {
-    backgroundColor: '#fff', // Cambia el color del fondo del menú
-    borderRadius: 10, // Opcional: Redondea los bordes del menú
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
 
   scrollViewContainer: {
@@ -714,13 +714,13 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   selectedTabText: {
-    color: MyTheme.colors.primary, // Utiliza el color principal de tu tema
+    color: MyTheme.colors.primary,
     fontWeight: 'bold',
   },
   underline: {
     marginTop: 4,
     height: 2,
     width: '100%',
-    backgroundColor: MyTheme.colors.primary, // Utiliza el color principal de tu tema
+    backgroundColor: MyTheme.colors.primary,
   },
 });

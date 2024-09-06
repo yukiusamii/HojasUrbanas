@@ -63,7 +63,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
     precio: number,
     type: string | null = null,
   ) => {
-    const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
+    const uid = useProfileStore.getState().uid;
     set(state => {
       const existingProductIndex = state.productos.findIndex(
         product => product.id === id,

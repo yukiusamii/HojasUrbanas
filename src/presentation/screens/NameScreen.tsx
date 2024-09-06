@@ -19,10 +19,9 @@ export const NameScreen = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 3000, // Duración de la animación en milisegundos
-      useNativeDriver: true, // Mejora el rendimiento al usar el controlador nativo
+      duration: 3000,
+      useNativeDriver: true,
     }).start(() => {
-      // Callback que se ejecuta después de la animación
       // console.log(
       //   '*******************HOLA PANTALLA DE INICIO **************************',
       // );
@@ -30,8 +29,8 @@ export const NameScreen = () => {
         navigation.reset({
           index: 0,
           routes: [{name: 'Auth'}],
-        }); // Reemplaza con el nombre de la pantalla a la que deseas navegar
-      }, 1500); // Reemplaza con el nombre de la pantalla a la que deseas navegar
+        });
+      }, 1500);
     });
   }, [fadeAnim, navigation]);
   return (
@@ -65,9 +64,9 @@ export const NameScreen = () => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 200, // ajusta el tamaño de la imagen según tus necesidades
+    width: 200,
     height: 200,
-    resizeMode: 'contain', // puedes usar 'cover', 'stretch', etc. según tus necesidades
+    resizeMode: 'contain',
     marginBottom: 8,
   },
 

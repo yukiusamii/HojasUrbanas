@@ -50,7 +50,7 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
     riego: string,
     fertilizacion: string,
   ) => {
-    const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
+    const uid = useProfileStore.getState().uid;
     const {misPlantas} = get();
 
     // Comprobar si la planta ya está añadida (basado en el campo id)
@@ -64,7 +64,6 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
 
       set({misPlantas: updatedPlantas});
 
-      // Guardar misPlantas en Firebase
       savePlantsToFirebase(uid || '', updatedPlantas);
       ToastAndroid.show('Planta añadida.', ToastAndroid.SHORT);
     } else {
@@ -73,7 +72,7 @@ export const usePlantStore = create<MyPlantState>()((set, get) => ({
   },
 
   deletePlant: (id: string) => {
-    const uid = useProfileStore.getState().uid; // Usamos getState() para obtener el UID sin hooks
+    const uid = useProfileStore.getState().uid;
     set(state => {
       const updatedPlantas = state.misPlantas.filter(plant => plant.id !== id);
       savePlantsToFirebase(uid || '', updatedPlantas);

@@ -50,7 +50,6 @@ export const PruebasScreen = () => {
             descripcion: docData.descripcion,
             img_url: docData.img_url,
             precio: docData.precio,
-            // Agrega otros campos que tengas en tu documento de planta
           } as Planta;
         });
 
@@ -116,9 +115,9 @@ export const PruebasScreen = () => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 200, // ajusta el tamaño de la imagen según tus necesidades
+    width: 200,
     height: 200,
-    resizeMode: 'contain', // puedes usar 'cover', 'stretch', etc. según tus necesidades
+    resizeMode: 'contain',
     marginBottom: 8,
   },
   flatList: {

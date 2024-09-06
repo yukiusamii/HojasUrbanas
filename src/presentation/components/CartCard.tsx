@@ -42,10 +42,7 @@ export const CartCard = ({
     useCallback(() => {
       setQuantity(cantProd);
 
-      // Si necesitas limpiar algo cuando la pantalla pierde foco, puedes devolver una función de limpieza
-      return () => {
-        // Función de limpieza si es necesaria
-      };
+      return () => {};
     }, [cantProd]),
   );
   return (

@@ -9,14 +9,13 @@ export const MyTheme = {
     primary: '#4DB22A', // Color Primario
     accent: '#656565', // Color Secundario
     background: '#ffffff', // Color de Fondo
-    surface: '#ffffff', // Color de Superficie
+    surface: '#ffffff',
     tertiary100: '#DEF7FF',
     primary5: '#fce1ef',
     lightGrey: '#b7b7b7',
     black: '#1A1A1A',
     navBar: '#D4F5D4',
     white: '#ffffff',
-    // Puedes personalizar otros colores según necesites
   },
 };
 
