@@ -191,7 +191,7 @@ export const HomeScreen = () => {
       // Filtramos solo los productos que coincidan con los tipos seleccionados
       filteredData = combinedData.filter(
         product =>
-          (product.type === null && query.plantas) || // Filtrar plantas (type es null)
+          (product.type === undefined && query.plantas) ||
           (product.type === 'fertilizante' && query.fertilizante) ||
           (product.type === 'pesticida' && query.pesticida) ||
           (product.type === 'fungicida' && query.fungicida) ||
